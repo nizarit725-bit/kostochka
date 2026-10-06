@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f5d50">
+<title>«Косточка» — тренажёр чтения (РКИ, А2)</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#fff; --ink:#1f2523; --muted:#5d6763; --line:#ddd8cc;
+  --accent:#2f5d50; --accent2:#e7f0ec; --ok:#1e7a46; --okbg:#e3f4ea; --bad:#b3261e; --badbg:#fbe9e7;
+  --warn:#8a5a00; --warnbg:#fff4d6; --sel:#ffe08a; --radius:14px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+a{color:var(--accent)}
+header{position:sticky;top:0;z-index:5;background:var(--accent);color:#fff;padding:8px 12px 6px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.hrow{display:flex;align-items:center;gap:8px;max-width:680px;margin:0 auto}
+.htitle{flex:1;font-weight:700;font-size:17px;line-height:1.2;cursor:pointer}
+.htitle small{display:block;font-weight:400;opacity:.85;font-size:13px}
+.hbtn{background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:10px;min-height:40px;min-width:40px;padding:0 10px;font-size:15px;cursor:pointer}
+.progress{display:flex;gap:4px;max-width:680px;margin:8px auto 2px}
+.pdot{flex:1;min-height:34px;border:0;border-radius:8px;background:rgba(255,255,255,.18);color:#fff;font-weight:700;font-size:15px;cursor:pointer;padding:0}
+.pdot.done{background:#9fd3b8;color:#123}
+.pdot.cur{background:#fff;color:var(--accent);outline:2px solid #ffe08a}
+main{max-width:680px;margin:0 auto;padding:14px 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:0 0 14px}
+h1{font-size:24px;margin:0 0 8px;line-height:1.25}
+h2{font-size:20px;margin:0 0 10px;line-height:1.3}
+h3{font-size:17px;margin:14px 0 6px}
+.steplabel{font-size:14px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.q{font-size:20px;font-weight:600;margin:4px 0 12px}
+.muted{color:var(--muted);font-size:15px}
+.note{background:var(--warnbg);border-left:5px solid #e0a800;border-radius:10px;padding:10px 12px;font-size:15px;margin:10px 0}
+.info{background:var(--accent2);border-left:5px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:15px;margin:10px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:52px;padding:10px 18px;border-radius:12px;border:2px solid var(--accent);background:var(--accent);color:#fff;font-size:17px;font-weight:600;cursor:pointer;text-decoration:none;margin:6px 6px 6px 0;-webkit-tap-highlight-color:transparent}
+.btn.sec{background:#fff;color:var(--accent)}
+.btn.red{background:var(--bad);border-color:var(--bad)}
+.btn.block{display:flex;width:100%;margin:8px 0}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap}
+input[type=text],input[type=email],textarea{width:100%;font:inherit;font-size:18px;padding:12px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{min-height:90px;resize:vertical}
+label.lbl{display:block;font-weight:600;font-size:15px;margin:10px 0 4px}
+.story{font-size:20px;line-height:1.75}
+.story p{margin:0 0 10px;text-indent:1.2em}
+.story .w{cursor:pointer;border-radius:5px;padding:1px 0;-webkit-tap-highlight-color:transparent}
+.story .w:focus-visible{outline:2px solid var(--accent)}
+.story .w.voc{border-bottom:2px dotted var(--accent)}
+.story.tap .w{padding:3px 2px;margin:-1px 0}
+.story .w.on{background:var(--sel);box-shadow:0 0 0 2px #e5b800}
+.story .w.hit{background:var(--okbg);box-shadow:0 0 0 2px var(--ok)}
+.story .w.father{background:#f1ebff}
+.src{font-size:14px;color:var(--muted);margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+.toggles{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:999px;min-height:44px;padding:4px 14px;font-size:15px;cursor:pointer;color:var(--ink)}
+.chip.on{border-color:var(--accent);background:var(--accent2);font-weight:600}
+.vcard{border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0;background:#fff}
+.vcard.seen{border-color:#9fd3b8}
+.vword{font-size:24px;font-weight:700}
+.vgloss{margin:4px 0}
+.vex{font-style:italic;color:var(--muted);font-size:16px}
+.fa{direction:rtl;text-align:right;font-size:19px;margin-top:6px;font-family:Tahoma,"Noto Naskh Arabic","Segoe UI",sans-serif}
+.review{display:inline-block;font-size:12px;background:var(--warnbg);color:var(--warn);border-radius:6px;padding:1px 6px;margin-left:6px;direction:ltr}
+.dal{display:block;border:2px solid var(--accent);border-radius:14px;padding:12px 14px;margin:10px 0;text-decoration:none;color:var(--ink);background:#fff}
+.dal b{font-size:20px;color:var(--accent)}
+.res{border-radius:12px;padding:12px;margin:10px 0;font-size:16px}
+.res.ok{background:var(--okbg);border:2px solid var(--ok)}
+.res.bad{background:var(--badbg);border:2px solid var(--bad)}
+.res.neutral{background:#f2f2f2;border:2px solid #ccc}
+.verdict{font-size:20px;font-weight:800}
+.tag{display:inline-block;border-radius:8px;padding:2px 8px;margin:3px 4px 3px 0;font-size:16px;border:1px solid transparent}
+.tag.key{background:var(--okbg);border-color:var(--ok);font-weight:700}
+.tag.mk{background:#eef7f1;border-color:#9fd3b8}
+.tag.no{background:#f2f2f2;border-color:#ccc;color:#555}
+.tag.dalw{background:var(--warnbg);border-color:#e0a800}
+.ph{font-size:19px;line-height:1.8;background:#fafaf7;border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
+.ph .k{background:var(--okbg);border-bottom:3px solid var(--ok);font-weight:700}
+.ph .m{background:#eef7f1;border-bottom:3px solid #9fd3b8}
+.ph .d{background:var(--warnbg);border-bottom:3px dotted #e0a800}
+.frame{font-size:19px;line-height:2}
+.frame .fixed{font-weight:600;color:var(--accent)}
+.ref{background:var(--accent2);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:17px}
+.ref b{color:var(--accent)}
+.rec{text-align:center}
+.timer{font-size:44px;font-weight:800;font-variant-numeric:tabular-nums;margin:6px 0}
+.bar{position:relative;height:16px;background:#eee;border-radius:8px;overflow:hidden;margin:6px 0 4px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0}
+.bar .zone{position:absolute;top:0;bottom:0;background:rgba(30,122,70,.18);border-left:2px solid var(--ok);border-right:2px solid var(--ok)}
+.recdot{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--bad);margin-right:6px;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+audio{width:100%;margin:8px 0}
+pre.summary{white-space:pre-wrap;word-break:break-word;font:15px/1.45 ui-monospace,Menlo,Consolas,monospace;background:#fafaf7;border:1px solid var(--line);border-radius:12px;padding:12px;max-height:50vh;overflow:auto}
+details{margin:8px 0}
+summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center;color:var(--accent)}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:5;background:#fff;border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
+nav.bottom .in{display:flex;gap:10px;max-width:680px;margin:0 auto}
+nav.bottom .btn{flex:1;margin:0}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:12px;font-size:16px;z-index:20;max-width:92vw;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.hidden{display:none!important}
+#print{display:none}
+.pcards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pcard{border:2px dashed #888;border-radius:10px;padding:10px;break-inside:avoid;background:#fff}
+.pcard .vword{font-size:22px}
+.pcard.wide{grid-column:1/-1}
+@media (max-width:520px){.pcards{grid-template-columns:1fr}}
+@media print{
+  body{background:#fff;padding:0;font-size:13pt}
+  header,main,nav.bottom,.toast{display:none!important}
+  #print{display:block!important;padding:0}
+  .pcards{grid-template-columns:1fr 1fr}
+  .pcard{border:1.5pt dashed #000}
+  .fa{font-size:14pt}
+  .story{font-size:14pt;line-height:1.6}
+  .pagebreak{break-before:page}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div class="htitle" id="hTitle" role="button" tabindex="0">«Косточка» · Л. Н. Толстой<small>Тренажёр чтения · РКИ · А2</small></div>
+    <button class="hbtn" id="hText" title="Текст рассказа">📖</button>
+    <button class="hbtn" id="hCards" title="Карточки для печати">🖨</button>
+    <button class="hbtn" id="hAbout" title="О методике">ℹ︎</button>
+  </div>
+  <div class="progress" id="progress" aria-label="Шаги"></div>
+</header>
+<main id="main"></main>
+<nav class="bottom"><div class="in">
+  <button class="btn sec" id="navPrev">← Назад</button>
+  <button class="btn" id="navNext">Далее →</button>
+</div></nav>
+<div id="print"></div>
+
+<script>
+/* =====================================================================
+   КОНФИГУРАЦИЯ КОНТЕНТА
+   Весь учебный материал — здесь. Чтобы добавить другой короткий текст,
+   скопируйте объект в массив TEXTS и замените поля. (Готово к переносу
+   в Telegram-бота: это обычный JSON-совместимый объект.)
+   Разметка {е|ё} в тексте: слева — написание издания, справа — с буквой ё
+   (переключатель «ё» на экране текста).
+   ===================================================================== */
+const TEXTS = [
+{
+  id: "kostochka",
+  title: "Косточка",
+  subtitle: "(Быль)",
+  author: "Л. Н. Толстой",
+  level: "А2",
+  hero: "Ваня",
+  wordCount: 146,
+  edition: "Толстой Л. Н. Косточка // Собрание сочинений в 22 тт. М.: Художественная литература, 1982. Т. 10. С. 37–38.",
+  sourceUrl: "https://rvb.ru/tolstoy/01text/vol_10/01text/0086.htm",
+  altSourceUrl: "https://ru.wikisource.org/wiki/Первая_русская_книга_для_чтения_(Толстой)",
+  paragraphs: [
+    "Купила мать слив и хотела их дать детям после обеда. Они лежали на тарелке. Ваня никогда не ел слив и вс{е|ё} нюхал их. И очень они ему нравились. Очень хотелось съесть. Он вс{е|ё} ходил мимо слив. Когда никого не было в горнице, он не удержался, схватил одну сливу и съел. Перед обедом мать сочла сливы и видит, одной нет. Она сказала отцу.",
+    "За обедом отец и говорит: «А что, дети, не съел ли кто-нибудь одну сливу?» Все сказали: «Нет». Ваня покраснел как рак, и сказал тоже: «Нет, я не ел».",
+    "Тогда отец сказал: «Что съел кто-нибудь из вас, это нехорошо; но не в том беда. Беда в том, что в сливах есть косточки, и если кто не умеет их есть и проглотит косточку, то через день умр{е|ё}т. Я этого боюсь».",
+    "Ваня побледнел и сказал: «Нет, я косточку бросил за окошко».",
+    "И все засмеялись, а Ваня заплакал."
+  ],
+  /* реплика отца, которую подсвечиваем после словаря (шаг 0) */
+  fatherLine: "Что съел кто-нибудь из вас, это нехорошо",
+
+  /* ШАГ 0 — предтекст: карточки слов. fa — перевод на фарси: ТРЕБУЕТ ПРОВЕРКИ ПРЕПОДАВАТЕЛЕМ */
+  vocab: [
+    { word: "слива", inText: ["слив","сливу","сливы","сливах"], gloss: "Фрукт. Маленький, круглый, синий или жёлтый. Внутри — косточка.", example: "Купила мать слив.", fa: "آلو", faReview: true },
+    { word: "горница", inText: ["горнице"], gloss: "Старое слово: большая чистая комната в доме. Сейчас говорят «комната».", example: "Когда никого не было в горнице…", fa: "اتاق (اتاقِ اصلیِ خانه)", faReview: true },
+    { word: "косточка", inText: ["косточки","косточку"], gloss: "Твёрдая часть внутри сливы, вишни, абрикоса. Её не едят.", example: "В сливах есть косточки.", fa: "هسته (هستهٔ میوه)", faReview: true },
+    { word: "покраснел", lemma: "покраснеть", inText: ["покраснел"], gloss: "Лицо стало красным (так бывает, когда человек волнуется или ему неловко). «Как рак» — очень красный.", example: "Ваня покраснел как рак.", fa: "سرخ شد (صورتش قرمز شد)", faReview: true },
+    { word: "нехорошо", inText: ["нехорошо"], gloss: "Не хорошо; плохо, не так, как надо.", example: "…это нехорошо.", fa: "خوب نیست؛ بد است", faReview: true }
+  ],
+  /* Словарь Даля: только предтекст. Ссылки проверены (HTTP 200) 06.10.2026 */
+  dal: [
+    { word: "неправда", url: "https://gufo.me/dict/dal/неправда",
+      comment: "Статья «НЕПРАВДА» в «Толковом словаре живого великорусского языка» В. И. Даля: значение и пословицы.",
+      offline: "НЕПРАВДА ж. противопол. правда. …для него [народа] неправда — всякая незаконность, дело противное совести, притеснение, обида… ложь на деле, криводушие, недобросовестность, кривда. Пословица: «Всякая неправда грех»." },
+    { word: "нехорошо", url: "https://gufo.me/dict/dal/хороший",
+      comment: "Отдельной статьи «нехорошо» у Даля нет: «хорошо» — «см. хороший». Открывается статья «ХОРОШИЙ» (там же «хорошо — одобренье действия» и пословицы).",
+      altUrl: "https://gufo.me/dict/dal/худой", altLabel: "Статья «ХУДОЙ»: «…дурной, плохой, нехороший»",
+      offline: "ХОРОШИЙ …добрый или путный, ладный… ценимый по внутренним качествам. Хорошо — одобренье действия: «Это хорошо написано. Он ведет себя хорошо». Пословица: «Что хорошо, то хорошо (то не худо)». ХУДОЙ — неладный, негодный, дурной, плохой, нехороший." }
+  ],
+  dalNote: "Толкование из словаря Даля не копируется в ответ и маркером не считается. Словарь только снимает трудность слова. Маркер — слово из самого рассказа.",
+
+  steps: {
+    1: { question: "Что сделал Ваня, когда никого не было в горнице?",
+         reference: "схватил одну сливу и съел",
+         keyGroups: [
+           { label: "схватил / взял", stems: ["схват","схвач","взял","взя","взяв"] },
+           { label: "слив…", stems: ["слив"] },
+           { label: "съел", stems: ["съел","съе","съест"] }
+         ] },
+    2: { question: "Какие слова говорят, что поступок замечен?",
+         reference: [
+           { word: "нехорошо",  stems: ["нехорош"] },
+           { word: "покраснел", stems: ["покрасне"] },
+           { word: "побледнел", stems: ["побледне"] },
+           { word: "заплакал",  stems: ["заплак","заплач"] }
+         ] },
+    3: { title: "Письмо по рамке",
+         /* {1},{2},{3} — поля студента; остальное — неизменяемая рамка */
+         frame: "Ваня сделал {1}. Это {2}, потому что в тексте сказано: «{3}».",
+         slots: { 1: "что сделал Ваня", 2: "твоё слово: какой это поступок", 3: "слова из рассказа (цитата)" } },
+    4: { minSec: 30, maxSec: 45 },
+    5: { question: "Какие слова рассказа использованы?" }
+  },
+
+  /* ШАГ 5 — словарь маркеров (поиск по началу слова, после нормализации ё→е).
+     key: ключевой маркер; weak: слово из текста, но маркером не считается (общее слово). */
+  lexicon: [
+    { lemma: "нехорошо",   stems: ["нехорош"], key: true },
+    { lemma: "покраснел",  stems: ["покрасне"], key: true },
+    { lemma: "побледнел",  stems: ["побледне"], key: true },
+    { lemma: "заплакал",   stems: ["заплак","заплач","плакал","плачет","плакать"], key: true },
+    { lemma: "съел",       stems: ["съел","съе","съест"], key: true },
+    { lemma: "косточка",   stems: ["косточк","косточек"], key: true },
+    { lemma: "слива",      stems: ["слив"], key: true },
+    { lemma: "схватил",    stems: ["схват","схвач"], key: true },
+    { lemma: "не удержался", stems: ["удерж"], key: true },
+    { lemma: "не ел",      exact: ["ел","ела","ели"], key: true },
+    { lemma: "бросил",     stems: ["брос","брош"], key: true },
+    { lemma: "окошко",     stems: ["окошк","окошеч"] },
+    { lemma: "как рак",    exact: ["рак","рака","раком"] },
+    { lemma: "беда",       stems: ["беда","беды","беде","беду","бедой"] },
+    { lemma: "боюсь",      stems: ["боюсь","боит","боят","бояться","боял"] },
+    { lemma: "проглотит",  stems: ["проглот","глота"] },
+    { lemma: "умрёт",      stems: ["умрет","умрут","умер","умир"] },
+    { lemma: "засмеялись", stems: ["засмея","засмею","смеял","смеют","смеет"] },
+    { lemma: "нюхал",      stems: ["нюха"] },
+    { lemma: "нравились",  stems: ["нрав"] },
+    { lemma: "горница",    stems: ["горниц"] },
+    { lemma: "сочла",      stems: ["сочл","счел","счесть"] },
+    { lemma: "обед",       stems: ["обед"] },
+    { lemma: "тарелка",    stems: ["тарелк"] },
+    { lemma: "сказал",     stems: ["сказ"], weak: true },
+    { lemma: "говорит",    stems: ["говор"], weak: true },
+    { lemma: "мать",       stems: ["мать","матер"], weak: true },
+    { lemma: "отец",       stems: ["отец","отц"], weak: true },
+    { lemma: "дети",       stems: ["дети","детя","детей"], weak: true },
+    { lemma: "хотела",     stems: ["хоте"], weak: true }
+  ],
+  /* слова рамки шага 3 — не считаются маркерами, даже если есть в тексте */
+  frameWords: ["ваня","вани","ване","ваню","сделал","сделала","тексте","текст","сказано"],
+  /* слова, которые студент мог взять из толкования Даля, — маркером не являются */
+  dalWords: ["неправд","ложь","лжи","лжец","лгал","лгат","солгал","врал","врат","вран","кривд","криводуш","недобросовест","грех","греш","совест","несправедлив","худ","дурн","плох","обман","правд"]
+}
+];
+
+/* служебные слова: не маркеры */
+const STOP = new Set(("и а но да или не ни же ли бы б то это этот эта эти этого этом тот та те того том он она оно они его ее её ему ей им их ими нем ней них я меня мне мной ты тебя тебе мы нас нам вы вас вам себя себе свой своя свое своё свою свои в во на за из к ко с со у о об обо от до по при для без над под про перед через после мимо между что чтобы как когда если то так там тут где куда кто кого кому никто никого ничего все всё весь вся всех всем всеми тоже также очень тогда потом уже еще ещё только вот был была было были быть будет есть нет даже или либо чем чего чему один одна одно одну одной одного потому поэтому который которая которые кто-нибудь что-нибудь сам сама сами").split(/\s+/));
+
+/* ===================================================================== */
+const LS_KEY = "rki-reading-trainer-v1";
+const ORDER = [0, "text", 1, 2, 3, 4, 5, "send"];
+const PLABEL = { 0: "0", text: "📖", 1: "1", 2: "2", 3: "3", 4: "4", 5: "5", send: "✉" };
+
+let S = load();
+let T = TEXTS.find(t => t.id === S.textId) || TEXTS[0];
+function blankText(){ return { done:{}, s0:{seen:[]}, s1:{answer:"",checked:false}, s2:{sel:[],typed:"",checked:false}, s3:{1:"",2:"",3:""}, s4:{phrase:"",phraseEdited:false,recorded:false,dur:0,corrected:false}, s5:{checked:false} }; }
+function load(){
+  let s; try{ s = JSON.parse(localStorage.getItem(LS_KEY)||"null"); }catch(e){ s=null; }
+  if(!s || typeof s!=="object") s = {};
+  s.textId = s.textId || TEXTS[0].id; s.screen = (s.screen===undefined)?"start":s.screen;
+  s.name = s.name||""; s.teacherEmail = s.teacherEmail||""; s.yo = !!s.yo; s.fa = (s.fa===undefined)?true:s.fa;
+  s.texts = s.texts||{};
+  return s;
+}
+function st(){ if(!S.texts[T.id]) S.texts[T.id]=blankText(); return S.texts[T.id]; }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ---------- утилиты ---------- */
+const $ = (sel, root=document) => root.querySelector(sel);
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s||"").toLowerCase().replace(/ё/g,"е");
+const WORD_RE = /[А-Яа-яЁёA-Za-z]+(?:-[А-Яа-яЁё]+)*/g;
+function resolveYo(s, yo){ return s.replace(/\{([^|}]*)\|([^}]*)\}/g, (_,a,b)=> yo?b:a); }
+function paragraphs(yo){ return T.paragraphs.map(p=>resolveYo(p, yo)); }
+function fullText(yo){ return paragraphs(yo).join(" "); }
+function words(s){ return (String(s||"").match(WORD_RE)||[]); }
+function toast(msg){ const d=document.createElement("div"); d.className="toast"; d.textContent=msg; document.body.appendChild(d); setTimeout(()=>d.remove(), 2600); }
+
+/* Простой «стеммер»: отсечение типичных окончаний (основа ≥ 3 букв) */
+const ENDINGS = ["ться","тся","ами","ями","ого","его","ому","ему","ыми","ими","ешь","ете","ишь","ите","ала","яла","ила","ыла","ела","али","яли","или","ыли","ели","ать","ять","ить","еть","уть","ой","ей","ий","ый","ая","яя","ое","ее","ые","ие","ую","юю","ом","ем","ам","ям","ах","ях","ов","ев","ал","ял","ил","ыл","ел","ют","ут","ат","ят","ет","ит","ся","сь","а","я","о","е","и","ы","у","ю","ь","й"];
+function stem(w){
+  w = norm(w);
+  if (w.length <= 3) return w;
+  let changed = true;
+  while(changed){ changed=false;
+    for(const e of ENDINGS){ if(w.endsWith(e) && w.length - e.length >= 3){ w = w.slice(0, -e.length); changed=true; break; } }
+  }
+  return w;
+}
+/* объединяем «не хорошо» → «нехорошо» */
+function tokensOf(text){
+  const raw = words(text); const out=[];
+  for(let i=0;i<raw.length;i++){
+    const n = norm(raw[i]);
+    if(n==="не" && raw[i+1] && norm(raw[i+1]).startsWith("хорош")){ out.push({raw: raw[i]+" "+raw[i+1], n: "не"+norm(raw[i+1])}); i++; continue; }
+    out.push({raw: raw[i], n});
+  }
+  return out;
+}
+function lexMatch(n){
+  for(const g of T.lexicon){
+    if(g.exact && g.exact.includes(n)) return g;
+    if(g.stems && g.stems.some(p => n.startsWith(p))) return g;
+  }
+  return null;
+}
+/* индекс текста: основа → словоформа из рассказа */
+let STORY_IDX = null;
+function storyIndex(){
+  if(STORY_IDX) return STORY_IDX;
+  const idx = new Map();
+  for(const w of words(fullText(false))){ const n = norm(w); if(STOP.has(n)) continue; const s = stem(n); if(!idx.has(s)) idx.set(s, w.toLowerCase()); }
+  return (STORY_IDX = idx);
+}
+/* Анализ фразы шага 3 */
+function analyze(text){
+  const idx = storyIndex();
+  const toks = tokensOf(text).map(t => {
+    const n = t.n;
+    if(STOP.has(n)) return {...t, cat:"func"};
+    if(T.frameWords.includes(n)) return {...t, cat:"frame"};
+    const g = lexMatch(n);
+    if(g) return {...t, cat: g.weak ? "weak" : (g.key ? "key" : "marker"), lemma: g.lemma};
+    const s = stem(n);
+    if(s.length>=3 && idx.has(s)) return {...t, cat:"marker", lemma: idx.get(s)};
+    if(T.dalWords.some(p => n.startsWith(p))) return {...t, cat:"dal"};
+    return {...t, cat:"none"};
+  });
+  const uniq = cat => [...new Set(toks.filter(t=>t.cat===cat).map(t=>t.lemma || t.raw.toLowerCase()))];
+  const key = uniq("key"), other = uniq("marker");
+  return { toks, key, other, markers: key.concat(other), weak: uniq("weak"), frame: uniq("frame"), dal: uniq("dal"), counted: key.length + other.length > 0 };
+}
+function phraseOf(s3){
+  return T.steps[3].frame.replace(/\{(\d)\}/g, (_,k)=> (s3[k]||"").trim() || "…");
+}
+function quoteInText(q){
+  const clean = s => norm(s).replace(/[^а-яa-z\- ]+/g," ").replace(/\s+/g," ").trim();
+  const c = clean(q); if(c.split(" ").length < 1 || !c) return null;
+  return clean(fullText(false)).includes(c);
+}
+/* шаг 1 */
+function check1(ans){
+  const toks = tokensOf(ans).map(t=>t.n);
+  return T.steps[1].keyGroups.map(g => ({label:g.label, ok: toks.some(n => g.stems.some(p => n.startsWith(p)))}));
+}
+/* шаг 2 */
+function check2(){
+  const s = st().s2; const ws = storyWordsFlat();
+  const picked = s.sel.map(i => ws[i]).filter(Boolean).map(w=>norm(w));
+  const typed = tokensOf(s.typed).map(t=>t.n);
+  const all = picked.concat(typed);
+  const refs = T.steps[2].reference.map(r => ({word:r.word, ok: all.some(n => r.stems.some(p=>n.startsWith(p)))}));
+  const extra = [...new Set(all.filter(n => !STOP.has(n) && !T.steps[2].reference.some(r=>r.stems.some(p=>n.startsWith(p)))))];
+  return {refs, extra, any: all.length>0};
+}
+function storyWordsFlat(){ return words(fullText(S.yo)); }
+
+/* ---------- рендер текста ---------- */
+function vocabFor(n){ return T.vocab.find(v => v.inText.some(f=>norm(f)===n)); }
+function renderStory({tap=false, selected=[], hits=null, father=false}={}){
+  let i = 0;
+  const fl = norm(T.fatherLine);
+  const html = paragraphs(S.yo).map(p => {
+    let fStart=-1, fEnd=-1;
+    if(father){ const np = norm(p); const k = np.indexOf(fl); if(k>=0){ fStart=k; fEnd=k+fl.length; } }
+    const out = p.replace(WORD_RE, (w, off) => {
+      const idx = i++; const n = norm(w);
+      const cls = ["w"];
+      if(!tap && vocabFor(n)) cls.push("voc");
+      if(selected.includes(idx)) cls.push("on");
+      if(hits && hits.includes(idx)) cls.push("hit");
+      if(father && off>=fStart && off<fEnd) cls.push("father");
+      return `<span class="${cls.join(" ")}" data-i="${idx}"${tap?' role="button" tabindex="0"':''}>${esc(w)}</span>`;
+    });
+    return `<p>${out}</p>`;
+  }).join("");
+  return `<div class="story${tap?" tap":""}" id="story">${html}</div>`;
+}
+function sourceBlock(){
+  return `<div class="src">Источник текста: ${esc(T.edition)}<br>Электронная публикация: <a href="${esc(T.sourceUrl)}" target="_blank" rel="noopener">rvb.ru (Русская виртуальная библиотека)</a>; сверено также с <a href="${encodeURI(T.altSourceUrl)}" target="_blank" rel="noopener">ru.wikisource.org</a>. Слов в тексте: ${words(fullText(false)).length}.</div>`;
+}
+function textDetails(){ return `<details><summary>📖 Показать текст рассказа</summary>${renderStory()}</details>`; }
+
+/* ---------- экраны ---------- */
+const SCREENS = {
+start(){
+  const s = st(); const started = Object.keys(s.done).length>0;
+  return `<div class="card">
+    <h1>«${esc(T.title)}»</h1>
+    <div class="muted">${esc(T.author)} · рассказ для чтения · уровень ${esc(T.level)}</div>
+    <p>Ты прочитаешь короткий рассказ и шаг за шагом построишь <b>одну фразу</b> о поступке героя — со словами из рассказа. Потом отправишь ответ <b>лично преподавателю</b>.</p>
+    <label class="lbl" for="nameInp">Твоё имя</label>
+    <input type="text" id="nameInp" autocomplete="name" placeholder="Имя и фамилия" value="${esc(S.name)}">
+    <button class="btn block" id="goStart">${started?"Продолжить":"Начать"} →</button>
+    ${started?`<button class="btn sec block" id="reset">Начать заново (стереть ответы)</button>`:""}
+  </div>
+  <div class="card"><h2>Шаги</h2>
+    <ol start="0" style="padding-left:22px;margin:0">
+      <li>Слова перед чтением (словарь)</li><li>Что сделал Ваня?</li><li>Слова: поступок замечен</li><li>Фраза письменно (по рамке)</li><li>Та же фраза голосом, 30–45 секунд</li><li>Проверка: слова рассказа в твоей фразе</li>
+    </ol>
+    <p class="muted">Ответы сохраняются на этом телефоне. После первого открытия страница работает без интернета (ссылки на словарь — нужен интернет; есть карточки 🖨).</p>
+  </div>`;
+},
+0(){
+  const s = st().s0;
+  const cards = T.vocab.map((v,k)=>`<div class="vcard${s.seen.includes(k)?" seen":""}">
+      <div class="vword">${esc(v.word)}${v.lemma?` <span class="muted">(${esc(v.lemma)})</span>`:""}</div>
+      <div class="vgloss">${esc(v.gloss)}</div>
+      <div class="vex">${esc(v.example)}</div>
+      ${S.fa && v.fa?`<div class="fa" lang="fa" dir="rtl">${esc(v.fa)}${v.faReview?`<span class="review">проверить преподавателю</span>`:""}</div>`:""}
+      <button class="btn sec seenBtn" data-k="${k}" style="min-height:44px">${s.seen.includes(k)?"✓ Понятно":"Понятно"}</button>
+    </div>`).join("");
+  const dal = T.dal.map(d=>`<a class="dal" href="${encodeURI(d.url)}" target="_blank" rel="noopener"><b>Даль: «${esc(d.word)}» ↗</b><div class="muted">${esc(d.comment)}</div></a>${d.altUrl?`<div class="muted" style="margin:-4px 0 8px 4px">Ещё: <a href="${encodeURI(d.altUrl)}" target="_blank" rel="noopener">${esc(d.altLabel)}</a></div>`:""}`).join("");
+  return `<div class="card"><div class="steplabel">Шаг 0 · Перед чтением</div>
+    <h2>Слова из рассказа</h2>
+    <div class="toggles"><button class="chip${S.fa?" on":""}" id="faT">فارسی — перевод</button></div>
+    ${cards}
+  </div>
+  <div class="card"><h2>Словарь В. И. Даля</h2>
+    <p class="muted">Открой статьи, посмотри значение и пословицу. Потом вернись к словам отца в рассказе.</p>
+    ${dal}
+    <div class="note">⚠️ ${esc(T.dalNote)}</div>
+    <div class="info">Вернись к реплике отца: <b>«Что съел кто-нибудь из вас, это нехорошо…»</b> Какое значение слова работает здесь?</div>
+    <p class="muted">Нет интернета? Используй <a href="#" id="toCards">карточки для печати 🖨</a>.</p>
+  </div>`;
+},
+text(){
+  return `<div class="card"><div class="steplabel">Чтение</div>
+    <h1>${esc(T.title)} <span class="muted" style="font-size:16px">${esc(T.subtitle)}</span></h1>
+    <div class="muted">${esc(T.author)}</div>
+    <div class="toggles"><button class="chip${S.yo?" on":""}" id="yoT">ё для учащихся</button><button class="chip${S.hl?" on":""}" id="hlT">Слова отца</button></div>
+    ${renderStory({father: !!S.hl})}
+    <p class="muted">Слова с точками снизу — из карточек. Нажми на слово, чтобы увидеть значение.${S.yo?" Буква ё расставлена для учащихся; в издании 1982 г. — «все», «умрет».":""}</p>
+    ${sourceBlock()}
+  </div>`;
+},
+1(){
+  const s = st().s1; const cfg = T.steps[1];
+  let res = "";
+  if(s.checked){
+    const r = check1(s.answer); const n = r.filter(x=>x.ok).length;
+    res = `<div class="res ${n===r.length?"ok":"neutral"}"><b>Ключевые слова в ответе: ${n} из ${r.length}</b><br>${r.map(x=>`${x.ok?"✅":"▫️"} ${esc(x.label)}`).join("<br>")}</div>
+      <div class="ref">Эталон: <b>«${esc(cfg.reference)}»</b>. Сравни со своим ответом.</div>`;
+  }
+  return `<div class="card"><div class="steplabel">Шаг 1 · Факт</div>
+    <div class="q">${esc(cfg.question)}</div>
+    <textarea id="a1" placeholder="Напиши ответ словами из рассказа">${esc(s.answer)}</textarea>
+    <button class="btn block" id="chk1">Проверить</button>
+    ${res}
+    ${textDetails()}
+  </div>`;
+},
+2(){
+  const s = st().s2; const cfg = T.steps[2];
+  let res = "", hits = null;
+  if(s.checked){
+    const r = check2(); const n = r.refs.filter(x=>x.ok).length;
+    const ws = storyWordsFlat();
+    hits = ws.map((w,i)=>i).filter(i => cfg.reference.some(rf => rf.stems.some(p=>norm(ws[i]).startsWith(p))));
+    res = `<div class="res ${n===r.refs.length?"ok":"neutral"}"><b>Найдено: ${n} из ${r.refs.length}</b><br>${r.refs.map(x=>`${x.ok?"✅":"▫️"} ${esc(x.word)}`).join("<br>")}
+      ${r.extra.length?`<div class="muted" style="margin-top:6px">Ты отметил(а) также: ${r.extra.map(esc).join(", ")} — в эталоне этих слов нет.</div>`:""}</div>
+      <div class="ref">Эталон: <b>${cfg.reference.map(x=>esc(x.word)).join(", ")}</b>. В тексте они подсвечены зелёным.</div>`;
+  }
+  return `<div class="card"><div class="steplabel">Шаг 2 · Слова текста</div>
+    <div class="q">${esc(cfg.question)}</div>
+    <p class="muted">Нажимай на слова в тексте (нажми ещё раз — отменить). Можно также написать их ниже.</p>
+    ${renderStory({tap:true, selected:s.sel, hits})}
+    <label class="lbl" for="a2">Или напиши слова через запятую</label>
+    <input type="text" id="a2" value="${esc(s.typed)}" placeholder="…">
+    <div class="muted" id="selCount" style="margin-top:6px">Отмечено слов: ${s.sel.length}</div>
+    <button class="btn block" id="chk2">Проверить</button>
+    <button class="btn sec block" id="clr2">Снять отметки</button>
+    ${res}
+  </div>`;
+},
+3(){
+  const s = st().s3; const cfg = T.steps[3];
+  const parts = cfg.frame.split(/(\{\d\})/);
+  const html = parts.map(p => { const m = p.match(/^\{(\d)\}$/);
+    if(m){ const k=m[1]; return k==="3"
+      ? `<textarea id="f${k}" data-k="${k}" class="slot" rows="2" placeholder="${esc(cfg.slots[k])}">${esc(s[k])}</textarea>`
+      : `<input type="text" id="f${k}" data-k="${k}" class="slot" placeholder="${esc(cfg.slots[k])}" value="${esc(s[k])}">`; }
+    return p.trim()?`<span class="fixed">${esc(p.trim())}</span>`:""; }).join(" ");
+  return `<div class="card"><div class="steplabel">Шаг 3 · Письмо по рамке</div>
+    <div class="q">Напиши одну фразу по рамке</div>
+    <div class="frame">${html}</div>
+    <h3>Твоя фраза</h3>
+    <div class="ph" id="preview">${esc(phraseOf(s))}</div>
+    <div class="info">Опирайся на слова рассказа: без слова из текста ответ не засчитывается (проверка — на шаге 5). Не нужно защищать или осуждать Ваню — нужно опереться на слова автора.</div>
+    ${textDetails()}
+  </div>`;
+},
+4(){
+  const s = st(); const s4 = s.s4; const cfg = T.steps[4];
+  if(!s4.phraseEdited) s4.phrase = phraseOf(s.s3);
+  return `<div class="card"><div class="steplabel">Шаг 4 · Голос</div>
+    <div class="q">Скажи ту же фразу вслух: ${cfg.minSec}–${cfg.maxSec} секунд</div>
+    <div class="note">Порядок: сначала письменная фраза → преподаватель → потом голос. Если преподаватель уже исправил фразу, вставь исправленный вариант сюда.</div>
+    <label class="lbl" for="ph4">Фраза для чтения вслух</label>
+    <textarea id="ph4">${esc(s4.phrase)}</textarea>
+    <label style="display:flex;gap:10px;align-items:center;min-height:44px;font-size:16px"><input type="checkbox" id="corr4" ${s4.corrected?"checked":""} style="width:24px;height:24px"> Преподаватель уже исправил мою письменную фразу</label>
+    <div class="rec">
+      <div class="timer" id="timer">0:00</div>
+      <div class="bar"><span class="zone" style="left:${cfg.minSec/cfg.maxSec*100}%;right:0"></span><i id="tbar"></i></div>
+      <div class="muted">Зелёная зона — ${cfg.minSec}–${cfg.maxSec} с. Запись остановится сама на ${cfg.maxSec} с.</div>
+      <div id="recMsg" class="muted" style="min-height:24px;margin:6px 0"></div>
+      <button class="btn block" id="recBtn">🎙 Начать запись</button>
+      <button class="btn red block hidden" id="stopBtn">■ Стоп</button>
+      <div id="playBox" class="hidden">
+        <audio id="audio" controls></audio>
+        <div class="btnrow">
+          <button class="btn sec" id="reRec">↺ Записать заново</button>
+          <button class="btn sec" id="shareAudio">📤 Отправить файл</button>
+          <a class="btn sec" id="dlAudio" download>⬇ Скачать</a>
+        </div>
+      </div>
+    </div>
+    <div class="info">Голосовой файл отправляй <b>лично преподавателю</b>. В общий чат группы голосовая фраза попадает только после правки и подтверждения преподавателя.</div>
+  </div>`;
+},
+5(){
+  const s = st(); const a = analyze([s.s3[1],s.s3[2],s.s3[3]].join(" "));
+  const empty = ![1,2,3].some(k => (s.s3[k]||"").trim());
+  const ph = phraseOf(s.s3).replace(WORD_RE, w => w); // для показа
+  const highlighted = (()=>{
+    // подсветка внутри фразы: проходим по полям студента
+    const parts = T.steps[3].frame.split(/(\{\d\})/);
+    return parts.map(p=>{ const m=p.match(/^\{(\d)\}$/); if(!m) return esc(p);
+      const txt = (s.s3[m[1]]||"").trim() || "…";
+      return tokensOfHtml(txt); }).join("");
+  })();
+  const q = (s.s3[3]||"").trim() ? quoteInText(s.s3[3]) : null;
+  const tags = (arr, cls) => arr.map(x=>`<span class="tag ${cls}">${esc(x)}</span>`).join("");
+  return `<div class="card"><div class="steplabel">Шаг 5 · Маркеры</div>
+    <div class="q">${esc(T.steps[5].question)}</div>
+    ${empty?`<div class="res bad">Сначала напиши фразу на шаге 3.</div>`:`
+    <div class="ph">${highlighted}</div>
+    <div class="res ${a.counted?"ok":"bad"}" id="verdict">
+      <div class="verdict">${a.counted?"✅ Засчитывается":"❌ Не засчитывается"}</div>
+      ${a.counted?`В фразе есть слова из рассказа (маркеры): ${a.markers.length}.`:"В фразе нет ни одного слова из рассказа. <b>Без маркера из текста ответ не засчитывается.</b> Вернись к шагу 3 и опирайся на слова автора."}
+    </div>
+    ${a.key.length?`<h3>Ключевые маркеры</h3>${tags(a.key,"key")}`:""}
+    ${a.other.length?`<h3>Другие слова рассказа</h3>${tags(a.other,"mk")}`:""}
+    ${(a.frame.length||a.weak.length||a.dal.length)?`<h3>Не считаются маркерами</h3>
+      ${a.frame.length?`<div>${tags(a.frame,"no")} <span class="muted">— слова рамки</span></div>`:""}
+      ${a.weak.length?`<div>${tags(a.weak,"no")} <span class="muted">— общие слова (есть в тексте, но не маркер)</span></div>`:""}
+      ${a.dal.length?`<div>${tags(a.dal,"dalw")} <span class="muted">— нет в рассказе (слово из словаря / свои слова)</span></div>`:""}`:""}
+    ${q===null?"":`<div class="res ${q?"ok":"neutral"}" style="font-size:15px">${q?"✅ Цитата в кавычках дословно есть в тексте.":"ℹ️ Цитата в кавычках не совпадает с текстом дословно. Проверь по тексту."}</div>`}
+    <p class="muted">Проверка ищет только слова рассказа. Оценку поступка она не ставит и не предлагает. Окончательно решает преподаватель.</p>
+    `}
+    <div class="btnrow"><button class="btn sec" id="back3">✎ Исправить фразу</button><button class="btn" id="toSend">✉ Отправить преподавателю</button></div>
+  </div>`;
+},
+send(){
+  const canShare = !!navigator.share;
+  return `<div class="card"><div class="steplabel">Сдача работы</div>
+    <h2>Отправить преподавателю</h2>
+    <div class="info">Ответ отправляется <b>лично преподавателю</b>, не в общую группу. Так вежливая «правильная» фраза не обгоняет слово автора, и не страшно ошибиться.</div>
+    <label class="lbl" for="name2">Имя студента</label>
+    <input type="text" id="name2" value="${esc(S.name)}" placeholder="Имя и фамилия">
+    <label class="lbl" for="temail">E-mail преподавателя (для письма)</label>
+    <input type="email" id="temail" value="${esc(S.teacherEmail)}" placeholder="teacher@example.com" inputmode="email">
+    <h3>Текст ответа</h3>
+    <pre class="summary" id="summary">${esc(buildSummary())}</pre>
+    <button class="btn block" id="copyB">📋 Копировать</button>
+    ${canShare?`<button class="btn block" id="shareB">📤 Поделиться…</button>`:`<div class="muted">Кнопка «Поделиться» недоступна в этом браузере — используй Telegram или копирование.</div>`}
+    <a class="btn block" id="tgB" target="_blank" rel="noopener" href="#">✈️ Telegram — выбрать чат преподавателя</a>
+    <a class="btn sec block" id="mailB" href="#">✉️ Письмо (e-mail)</a>
+    <div class="note">В Telegram выбери <b>личный чат с преподавателем</b>, не группу. Голосовой файл (шаг 4) отправь отдельно тоже лично. В общий чат голосовая фраза попадает только после правки и подтверждения преподавателя.</div>
+  </div>`;
+},
+about(){
+  return `<div class="card"><h2>О методике (для преподавателя)</h2>
+    <p>Изучающее чтение короткого классического фрагмента — способ интеграции ценностных ориентиров русской литературы в обучение РКИ персоязычных студентов (А2) в цифровой среде. Ориентир не добавляется лекцией о нравственности: он уже заключён в авторском слове — отец говорит «это нехорошо», Ваня заплакал; студент извлекает поступок, находит оценку в тексте и строит на ней одно высказывание с маркером из отрывка.</p>
+    <p>Все шесть шагов ведут к одной устной фразе: 0 — предтекст со словарём В. И. Даля (толкование сверяется, но не копируется и маркером не считается; нет сети — карточки), 1 — факт, 2 — слова, показывающие, что поступок замечен, 3 — письмо по рамке, 4 — та же рамка устно (30–45 с, после правки), 5 — какие слова рассказа использованы. Без маркера из отрывка ответ не засчитывается.</p>
+    <p>Порядок: сначала факт и слова текста, затем письмо преподавателю, затем голос. Ответ идёт лично преподавателю, а не в общую группу: норма та’арофа — вежливого ожидаемого ответа — не снимается, но не должна прийти раньше слова автора; в общий чат голосовая фраза попадает только после правки и подтверждения.</p>
+    <p>Студента не просят встать на сторону Вани или осудить его; моральная лекция поверх отрывка целевым результатом не является. Прототип не использует ИИ: он проверяет только факты и наличие слов текста и не предлагает оценку.</p>
+    <p class="muted">Скорик П. А. (магистрант МПГУ); соавтор — Сахар Резаи Никху (Университет имени Алламе Табатабаи, Тегеран); научный руководитель — Марков В. Т., д. п. н., профессор МГУ имени М. В. Ломоносова и МПГУ.</p>
+    <h3>Текст и словарь</h3>
+    <p class="muted">${esc(T.edition)} — <a href="${esc(T.sourceUrl)}" target="_blank" rel="noopener">${esc(T.sourceUrl)}</a>. Словарь Даля: ${T.dal.map(d=>`<a href="${encodeURI(d.url)}" target="_blank" rel="noopener">${esc(d.url)}</a>`).join(", ")}. Переводы на фарси в карточках требуют проверки преподавателем.</p>
+    <h3>Настройка</h3>
+    <p class="muted">Текст, вопросы, эталоны и списки маркеров находятся в объекте <code>TEXTS</code> в начале скрипта.</p>
+  </div>`;
+},
+cards(){
+  return `<div class="card"><h2>Карточки для печати</h2>
+    <p class="muted">Для занятий без интернета: распечатай (или сохрани как PDF) — текст рассказа, слова и выдержки из словаря Даля.</p>
+    <button class="btn block" id="printB">🖨 Печать / PDF</button>
+  </div>${printHtml()}`;
+}
+};
+
+function tokensOfHtml(txt){
+  // подсветка слов в поле студента по категориям анализа
+  return esc(txt).replace(/[А-Яа-яЁёA-Za-z]+(?:-[А-Яа-яЁё]+)*/g, w => {
+    const a = analyze(w).toks[0]; if(!a) return w;
+    const cls = a.cat==="key"?"k":a.cat==="marker"?"m":a.cat==="dal"?"d":"";
+    return cls?`<span class="${cls}">${w}</span>`:w;
+  });
+}
+
+function printHtml(){
+  const v = T.vocab.map(x=>`<div class="pcard"><div class="vword">${esc(x.word)}</div><div>${esc(x.gloss)}</div><div class="vex">${esc(x.example)}</div>${x.fa?`<div class="fa" lang="fa" dir="rtl">${esc(x.fa)}</div>`:""}</div>`).join("");
+  const d = T.dal.map(x=>`<div class="pcard wide"><b>Словарь Даля: «${esc(x.word)}»</b><div style="font-size:.92em">${esc(x.offline)}</div><div class="muted" style="font-size:.8em">${esc(decodeURI(encodeURI(x.url)))}</div></div>`).join("");
+  return `<div class="card" style="background:#fff">
+    <h2>«${esc(T.title)}» ${esc(T.subtitle)} — ${esc(T.author)}</h2>
+    ${renderStoryPlain()}
+    <div class="src">${esc(T.edition)}</div>
+  </div>
+  <div class="pagebreak"></div>
+  <div class="pcards">${v}${d}
+    <div class="pcard wide"><b>⚠️ ${esc(T.dalNote)}</b></div>
+    <div class="pcard wide"><b>Рамка:</b> ${esc(T.steps[3].frame.replace(/\{\d\}/g,"…"))}</div>
+  </div>`;
+}
+function renderStoryPlain(){ return `<div class="story">${paragraphs(S.yo).map(p=>`<p>${esc(p)}</p>`).join("")}</div>`; }
+
+/* ---------- сводка для преподавателя ---------- */
+function buildSummary(){
+  const s = st(); const a = analyze([s.s3[1],s.s3[2],s.s3[3]].join(" "));
+  const r1 = check1(s.s1.answer||""); const r2 = check2();
+  const d = new Date();
+  const dt = d.toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
+  const L = [];
+  L.push(`РКИ · «${T.title}» (${T.author}) — ответ преподавателю`);
+  L.push(`Студент: ${S.name||"(имя не указано)"}`);
+  L.push(`Дата: ${dt}`);
+  L.push("");
+  L.push(`Шаг 1. ${T.steps[1].question}`);
+  L.push(`Ответ: ${(s.s1.answer||"").trim()||"—"}`);
+  L.push(`Ключевые слова: ${r1.map(x=>(x.ok?"✓ ":"✗ ")+x.label).join("; ")}`);
+  L.push("");
+  L.push(`Шаг 2. ${T.steps[2].question}`);
+  const ws = storyWordsFlat();
+  const picked = s.s2.sel.map(i=>ws[i]).filter(Boolean);
+  const typedW = (s.s2.typed||"").trim();
+  L.push(`Отмечено: ${picked.length?picked.join(", "):"—"}${typedW?` | написано: ${typedW}`:""}`);
+  L.push(`Найдено из эталона ${r2.refs.filter(x=>x.ok).length}/${r2.refs.length}: ${r2.refs.map(x=>(x.ok?"✓ ":"✗ ")+x.word).join(", ")}`);
+  L.push("");
+  L.push(`Шаг 3. Фраза:`);
+  L.push(phraseOf(s.s3));
+  L.push("");
+  L.push(`Шаг 4. Голосовая фраза: ${s.s4.recorded?`записана (${s.s4.dur} с), файл отправлю отдельно лично`:"не записана"}${s.s4.corrected?"; фраза исправлена преподавателем":""}`);
+  L.push(`(Голос — в общий чат только после правки и подтверждения преподавателя.)`);
+  L.push("");
+  L.push(`Шаг 5. Слова рассказа в фразе: ${a.markers.length?a.markers.join(", "):"нет"}`);
+  if(a.key.length) L.push(`Ключевые маркеры: ${a.key.join(", ")}`);
+  if(a.dal.length) L.push(`Не из рассказа (не маркеры): ${a.dal.join(", ")}`);
+  const q = (s.s3[3]||"").trim()?quoteInText(s.s3[3]):null;
+  if(q!==null) L.push(`Цитата дословно в тексте: ${q?"да":"нет"}`);
+  L.push(`Автопроверка: ${a.counted?"ЗАСЧИТЫВАЕТСЯ (есть маркер из текста)":"НЕ ЗАСЧИТЫВАЕТСЯ — нет ни одного маркера из текста"}`);
+  return L.join("\n");
+}
+
+/* ---------- навигация ---------- */
+function go(screen){ stopRecording(true); S.screen = screen; save(); render(); window.scrollTo(0,0); }
+function markDone(k){ st().done[k]=true; save(); renderProgress(); }
+function renderProgress(){
+  const p = $("#progress"); const d = st().done;
+  p.innerHTML = ORDER.map(k=>`<button class="pdot${d[k]?" done":""}${S.screen===k||String(S.screen)===String(k)?" cur":""}" data-go="${k}" aria-label="Шаг ${PLABEL[k]}">${PLABEL[k]}</button>`).join("");
+}
+function curIndex(){ return ORDER.findIndex(k => String(k)===String(S.screen)); }
+function render(){
+  const key = S.screen;
+  const fn = SCREENS[key]; const main = $("#main");
+  main.innerHTML = fn ? fn() : SCREENS.start();
+  renderProgress();
+  const i = curIndex();
+  $("#navPrev").disabled = (key==="start");
+  $("#navNext").textContent = key==="start" ? "Начать →" : (key==="send" ? "Готово ✓" : (i<0 ? "К шагам →" : "Далее →"));
+  bind(key);
+}
+function next(){
+  const key = S.screen;
+  if(key==="start"){ go(firstUndone()); return; }
+  const i = curIndex();
+  if(i<0){ go(firstUndone()); return; }
+  if(key===0) markDone(0);
+  if(key==="text") markDone("text");
+  if(key===3 && [1,2,3].some(k=>(st().s3[k]||"").trim())) markDone(3);
+  if(key===4) markDone(4);
+  if(key==="send"){ toast("Отправь ответ лично преподавателю ✉"); return; }
+  go(ORDER[Math.min(i+1, ORDER.length-1)]);
+}
+function prev(){
+  const i = curIndex();
+  if(S.screen==="start") return;
+  if(i<=0){ go("start"); return; }
+  go(ORDER[i-1]);
+}
+function firstUndone(){ const d = st().done; for(const k of ORDER){ if(!d[k]) return k; } return "send"; }
+
+/* ---------- обработчики ---------- */
+function bind(key){
+  const s = st();
+  const on = (sel, ev, fn) => { const el = $(sel); if(el) el.addEventListener(ev, fn); };
+  if(key==="start"){
+    on("#nameInp","input",e=>{S.name=e.target.value; save();});
+    on("#goStart","click",()=>go(firstUndone()));
+    on("#reset","click",()=>{ if(confirm("Стереть все ответы по этому тексту?")){ S.texts[T.id]=blankText(); save(); idbDel(T.id); render(); } });
+  }
+  if(key===0){
+    document.querySelectorAll(".seenBtn").forEach(b=>b.addEventListener("click",()=>{ const k=+b.dataset.k; if(!s.s0.seen.includes(k)) s.s0.seen.push(k); if(s.s0.seen.length===T.vocab.length) markDone(0); save(); render(); }));
+    on("#faT","click",()=>{S.fa=!S.fa; save(); render();});
+    on("#toCards","click",e=>{e.preventDefault(); go("cards");});
+  }
+  if(key==="text"){
+    on("#yoT","click",()=>{S.yo=!S.yo; save(); render();});
+    on("#hlT","click",()=>{S.hl=!S.hl; save(); render();});
+    on("#story","click",e=>{ const b=e.target.closest(".w"); if(!b) return; const v=vocabFor(norm(b.textContent)); if(v) toast(`${v.word}: ${v.gloss}`); });
+  }
+  if(key===1){
+    on("#a1","input",e=>{s.s1.answer=e.target.value; save();});
+    on("#chk1","click",()=>{ if(!s.s1.answer.trim()){ toast("Сначала напиши ответ"); return; } s.s1.checked=true; markDone(1); save(); render(); });
+  }
+  if(key===2){
+    on("#story","click",e=>{ const b=e.target.closest(".w"); if(!b) return; const i=+b.dataset.i; const k=s.s2.sel.indexOf(i);
+      if(k>=0) s.s2.sel.splice(k,1); else s.s2.sel.push(i); b.classList.toggle("on"); $("#selCount").textContent="Отмечено слов: "+s.s2.sel.length; save(); });
+    on("#story","keydown",e=>{ if((e.key==="Enter"||e.key===" ") && e.target.closest(".w")){ e.preventDefault(); e.target.click(); } });
+    on("#a2","input",e=>{s.s2.typed=e.target.value; save();});
+    on("#chk2","click",()=>{ if(!check2().any){ toast("Отметь слова в тексте или напиши их"); return; } s.s2.checked=true; markDone(2); save(); render(); });
+    on("#clr2","click",()=>{ s.s2.sel=[]; s.s2.checked=false; save(); render(); });
+  }
+  if(key===3){
+    document.querySelectorAll(".slot").forEach(el=>el.addEventListener("input",()=>{ s.s3[el.dataset.k]=el.value; if(!s.s4.phraseEdited){} s.s5.checked=false; save(); $("#preview").textContent=phraseOf(s.s3); }));
+  }
+  if(key===4){
+    on("#ph4","input",e=>{s.s4.phrase=e.target.value; s.s4.phraseEdited=true; save();});
+    on("#corr4","change",e=>{s.s4.corrected=e.target.checked; save();});
+    on("#recBtn","click",startRecording);
+    on("#stopBtn","click",()=>stopRecording(false));
+    on("#reRec","click",startRecording);
+    on("#shareAudio","click",shareAudio);
+    initRecorderUi();
+  }
+  if(key===5){
+    if([1,2,3].some(k=>(s.s3[k]||"").trim())){ s.s5.checked=true; markDone(5); save(); }
+    on("#back3","click",()=>go(3));
+    on("#toSend","click",()=>go("send"));
+  }
+  if(key==="send"){
+    const refresh=()=>{ $("#summary").textContent=buildSummary(); updateLinks(); };
+    on("#name2","input",e=>{S.name=e.target.value; save(); refresh();});
+    on("#temail","input",e=>{S.teacherEmail=e.target.value.trim(); save(); updateLinks();});
+    on("#copyB","click",()=>copyText(buildSummary()));
+    on("#shareB","click",async()=>{ try{ await navigator.share({title:`«${T.title}» — ответ`, text: buildSummary()}); markDone("send"); }catch(e){ if(e && e.name!=="AbortError") toast("Не получилось поделиться: "+e.message); } });
+    on("#tgB","click",()=>markDone("send"));
+    on("#mailB","click",()=>markDone("send"));
+    updateLinks();
+  }
+  if(key==="cards"){ on("#printB","click",()=>{ $("#print").innerHTML=printHtml(); window.print(); }); }
+}
+function updateLinks(){
+  const txt = buildSummary();
+  const head = `«${T.title}» — ответ студента`;
+  const tg = $("#tgB"), ml = $("#mailB");
+  if(tg) tg.href = "https://t.me/share/url?url=" + encodeURIComponent(head) + "&text=" + encodeURIComponent("\n" + txt);
+  if(ml) ml.href = "mailto:" + encodeURIComponent(S.teacherEmail||"").replace(/%40/g,"@") + "?subject=" + encodeURIComponent(head + (S.name?(" — "+S.name):"")) + "&body=" + encodeURIComponent(txt);
+}
+async function copyText(t){
+  try{ await navigator.clipboard.writeText(t); toast("Скопировано ✓"); markDone("send"); return; }catch(e){}
+  try{ const ta=document.createElement("textarea"); ta.value=t; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); const ok=document.execCommand("copy"); ta.remove(); toast(ok?"Скопировано ✓":"Выдели текст и скопируй вручную"); if(ok) markDone("send"); }
+  catch(e){ toast("Выдели текст и скопируй вручную"); }
+}
+
+/* ---------- запись голоса (MediaRecorder) ---------- */
+let REC = { mr:null, stream:null, chunks:[], t0:0, timer:null, blob:null, url:null, mime:"" };
+function pickMime(){
+  if(!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
+  for(const m of ["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus","audio/ogg"]) if(MediaRecorder.isTypeSupported(m)) return m;
+  return "";
+}
+function extFor(m){ return /mp4/.test(m)?"m4a":/ogg/.test(m)?"ogg":"webm"; }
+function recMsg(t, bad){ const el=$("#recMsg"); if(el){ el.innerHTML=t; el.style.color = bad?"var(--bad)":""; } }
+function recSupported(){ return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder); }
+function fmt(sec){ sec=Math.floor(sec); return Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0"); }
+function initRecorderUi(){
+  if(!recSupported()){
+    $("#recBtn").disabled = true;
+    recMsg("Запись голоса в этом браузере недоступна"+(window.isSecureContext===false?" (страница открыта не по https)":"")+". Запиши голосовое сообщение в Telegram — <b>в личный чат с преподавателем</b>.", true);
+  }
+  if(REC.blob) showPlayback(); else idbGet(T.id).then(b=>{ if(b && b.blob && S.screen===4){ REC.blob=b.blob; REC.mime=b.mime||b.blob.type; showPlayback(); } }).catch(()=>{});
+}
+async function startRecording(){
+  const cfg = T.steps[4];
+  if(!recSupported()){ initRecorderUi(); return; }
+  try{
+    REC.stream = await navigator.mediaDevices.getUserMedia({audio:true});
+  }catch(e){
+    const n = e && e.name;
+    const msg = (n==="NotAllowedError"||n==="SecurityError"||n==="PermissionDeniedError") ? "Нет доступа к микрофону. Разреши микрофон в настройках браузера и попробуй ещё раз — или запиши голосовое сообщение в Telegram лично преподавателю."
+      : (n==="NotFoundError"||n==="DevicesNotFoundError") ? "Микрофон не найден. Запиши голосовое сообщение в Telegram лично преподавателю."
+      : "Не удалось включить микрофон"+(n?` (${esc(n)})`:"")+". Запиши голосовое сообщение в Telegram лично преподавателю.";
+    recMsg(msg, true); return;
+  }
+  REC.chunks=[]; REC.mime = pickMime();
+  try{ REC.mr = REC.mime ? new MediaRecorder(REC.stream, {mimeType:REC.mime}) : new MediaRecorder(REC.stream); }
+  catch(e){ REC.mr = new MediaRecorder(REC.stream); }
+  REC.mime = REC.mr.mimeType || REC.mime || "audio/webm";
+  REC.mr.ondataavailable = ev => { if(ev.data && ev.data.size) REC.chunks.push(ev.data); };
+  REC.mr.onstop = onRecStop;
+  REC.mr.start(250);
+  REC.t0 = Date.now();
+  $("#recBtn").classList.add("hidden"); $("#stopBtn").classList.remove("hidden"); $("#playBox").classList.add("hidden");
+  recMsg(`<span class="recdot"></span>Идёт запись… Говори спокойно.`);
+  REC.timer = setInterval(()=>{
+    const sec = (Date.now()-REC.t0)/1000;
+    const t=$("#timer"), b=$("#tbar"); if(t) t.textContent = fmt(sec); if(b) b.style.width = Math.min(100, sec/cfg.maxSec*100)+"%";
+    if(sec >= cfg.maxSec) stopRecording(false);
+  }, 200);
+}
+function stopRecording(silent){
+  if(REC.timer){ clearInterval(REC.timer); REC.timer=null; }
+  if(REC.mr && REC.mr.state!=="inactive"){ REC.silent = silent; try{ REC.mr.stop(); }catch(e){} }
+  if(REC.stream){ REC.stream.getTracks().forEach(t=>t.stop()); REC.stream=null; }
+}
+function onRecStop(){
+  const dur = Math.round((Date.now()-REC.t0)/1000);
+  const blob = new Blob(REC.chunks, {type: REC.mime});
+  REC.mr = null;
+  if(!blob.size){ recMsg("Запись пустая. Попробуй ещё раз.", true); resetRecButtons(); return; }
+  REC.blob = blob;
+  const s = st(); s.s4.recorded = true; s.s4.dur = dur; markDone(4); save();
+  idbPut(T.id, {blob, mime:REC.mime, dur}).catch(()=>{});
+  if(S.screen!==4) return;
+  showPlayback();
+  const cfg=T.steps[4];
+  recMsg(dur < cfg.minSec ? `Записано ${dur} с. Рекомендуется ${cfg.minSec}–${cfg.maxSec} с — можно записать заново.` : `Записано ${dur} с ✓`);
+}
+function resetRecButtons(){ const r=$("#recBtn"), s=$("#stopBtn"); if(r) r.classList.remove("hidden"); if(s) s.classList.add("hidden"); }
+function showPlayback(){
+  resetRecButtons();
+  const pb=$("#playBox"); if(!pb || !REC.blob) return;
+  if(REC.url) URL.revokeObjectURL(REC.url);
+  REC.url = URL.createObjectURL(REC.blob);
+  $("#audio").src = REC.url;
+  const dl=$("#dlAudio"); dl.href=REC.url; dl.download=audioName();
+  pb.classList.remove("hidden");
+  $("#recBtn").classList.add("hidden");
+  const d = st().s4.dur; if(d) $("#timer").textContent = fmt(d);
+}
+function audioName(){
+  const n = (S.name||"student").trim().replace(/[^\wА-Яа-яЁё-]+/g,"_").slice(0,40);
+  const d = new Date().toISOString().slice(0,10);
+  return `${T.id}_${n}_${d}.${extFor(REC.mime||"")}`;
+}
+async function shareAudio(){
+  if(!REC.blob) return;
+  const file = new File([REC.blob], audioName(), {type: REC.blob.type||REC.mime});
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file], title:`«${T.title}» — голосовая фраза`, text:`${S.name||""}: голосовая фраза (лично преподавателю)`}); return; }
+    catch(e){ if(e && e.name==="AbortError") return; }
+  }
+  toast("Отправка файла недоступна — файл будет скачан");
+  $("#dlAudio").click();
+}
+
+/* ---------- IndexedDB для аудио (необязательно) ---------- */
+function idb(){ return new Promise((res,rej)=>{ if(!window.indexedDB) return rej(new Error("no idb")); const r=indexedDB.open("rki-audio",1); r.onupgradeneeded=()=>r.result.createObjectStore("a"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function idbPut(k,v){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction("a","readwrite"); tx.objectStore("a").put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }
+async function idbGet(k){ const db=await idb(); return new Promise((res,rej)=>{ const r=db.transaction("a").objectStore("a").get(k); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function idbDel(k){ try{ const db=await idb(); db.transaction("a","readwrite").objectStore("a").delete(k); REC.blob=null; }catch(e){} }
+
+/* ---------- старт ---------- */
+$("#navNext").addEventListener("click", next);
+$("#navPrev").addEventListener("click", prev);
+$("#hTitle").addEventListener("click", ()=>go("start"));
+$("#hText").addEventListener("click", ()=>go("text"));
+$("#hCards").addEventListener("click", ()=>go("cards"));
+$("#hAbout").addEventListener("click", ()=>go("about"));
+$("#progress").addEventListener("click", e=>{ const b=e.target.closest("[data-go]"); if(!b) return; const v=b.dataset.go; go(/^\d$/.test(v)?+v:v); });
+window.addEventListener("beforeprint", ()=>{ $("#print").innerHTML = printHtml(); });
+$("#print").innerHTML = printHtml();
+render();
+</script>
+</body>
+</html>
