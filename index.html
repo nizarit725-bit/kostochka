@@ -380,7 +380,7 @@ function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e)
 
 /* ---------- утилиты ---------- */
 const $ = (sel, root=document) => root.querySelector(sel);
-const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&","<":"<",">":">",'"':""","'":"&#39;"}[c]));
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"\x26amp;","<":"\x26lt;",">":"\x26gt;",'"':"\x26quot;","'":"\x26#39;"}[c]));
 const norm = s => String(s||"").toLowerCase().replace(/ё/g,"е");
 const WORD_RE = /[А-Яа-яЁёA-Za-z]+(?:-[А-Яа-яЁё]+)*/g;
 function resolveYo(s, yo){ return s.replace(/\{([^|}]*)\|([^}]*)\}/g, (_,a,b)=> yo?b:a); }
