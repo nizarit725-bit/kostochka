@@ -2344,7 +2344,7 @@ async function idbDel(k){ try{ const db=await idb(); db.transaction("a","readwri
    снимок каждой сессии); голос — из IndexedDB отдельным запросом. */
 const RQ_KEY = "kostochka-results-queue-v1";
 const AUDIO_MAX_BYTES = 10 * 1024 * 1024; /* ~10 МБ до кодирования в base64 */
-let RES_TIMER = null, RES_BUSY = false;
+let RES_TIMER = null, RES_BUSY = false, RES_AGAIN = false;
 function resultsConfigured(){ return /^https:\/\/script\.google(usercontent)?\.com\//.test(RESULTS_URL); }
 function rid(){ try{ if(crypto.randomUUID) return crypto.randomUUID(); }catch(e){} return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,10); }
 function stMeta(){ const s = st(); if(!s.meta) s.meta = {}; return s.meta; }
@@ -2370,6 +2370,7 @@ function resultsSchedule(){
 function resultsStatusText(){
   const m = stMeta(); const pending = Object.keys(rqLoad()).length;
   if(!resultsConfigured()) return "Таблица результатов ещё не подключена — ответы сохранены на телефоне и уйдут позже.";
+  if(pending && RES_BUSY) return "⏳ Отправляем результаты…";
   if(pending) return "⏳ Результаты ждут отправки (нет связи?) — уйдут автоматически.";
   if(Object.values(S.texts).some(t=>t.meta&&t.meta.audioPending)) return "⏳ Голосовая запись ждёт отправки.";
   if(m.lastSentAt) return "✅ Результаты отправлены в таблицу преподавателя" + (m.audioSentAt ? " (голос тоже)." : ".");
@@ -2387,7 +2388,8 @@ async function resultsPost(obj){
   } finally { if(timer) clearTimeout(timer); }
 }
 async function resultsFlush(manual){
-  if(RES_BUSY) return; if(!resultsConfigured()){ if(manual) toast("Адрес таблицы ещё не вписан в тренажёр"); resultsShowStatus(); return; }
+  if(RES_BUSY){ RES_AGAIN = true; return; }  /* идёт отправка — повторим сразу после неё, а не через 30 с */
+  if(!resultsConfigured()){ if(manual) toast("Адрес таблицы ещё не вписан в тренажёр"); resultsShowStatus(); return; }
   RES_BUSY = true;
   try{
     const q = rqLoad();
@@ -2399,7 +2401,8 @@ async function resultsFlush(manual){
     }
     await resultsSendAudio();
     if(manual) toast(Object.keys(rqLoad()).length ? "Нет связи — отправим позже" : "Отправлено ✓");
-  } finally { RES_BUSY = false; resultsShowStatus(); }
+  } finally { RES_BUSY = false; resultsShowStatus();
+    if(RES_AGAIN){ RES_AGAIN = false; setTimeout(()=>resultsFlush(), 200); } }
 }
 function blobToBase64(blob){ return new Promise((res,rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(",")[1]||""); r.onerror = ()=>rej(r.error); r.readAsDataURL(blob); }); }
 async function resultsSendAudio(){
