@@ -66,6 +66,8 @@ label.lbl,div.lbl{display:block;font-weight:600;font-size:15px;margin:10px 0 4px
 .vgloss{margin:4px 0}
 .vex{font-style:italic;color:var(--muted);font-size:16px}
 .fa{direction:rtl;text-align:right;font-size:19px;margin-top:6px;font-family:Tahoma,"Noto Naskh Arabic","Segoe UI",sans-serif}
+.faL{font-family:Tahoma,"Noto Naskh Arabic","Segoe UI",sans-serif;font-weight:400;color:#5d6763;unicode-bidi:isolate}
+.ctyBtn{font-size:16px}
 .review{display:inline-block;font-size:12px;background:var(--warnbg);color:var(--warn);border-radius:6px;padding:1px 6px;margin-left:6px;direction:ltr}
 .dal{display:block;border:2px solid var(--accent);border-radius:14px;padding:12px 14px;margin:10px 0;text-decoration:none;color:var(--ink);background:#fff}
 .dal b{font-size:20px;color:var(--accent)}
@@ -253,7 +255,7 @@ nav.bottom .btn{flex:1;margin:0}
    ===================================================================== */
 const RESULTS_URL = "https://script.google.com/macros/s/AKfycbz8-BQmqrw4DlOqifMBGqF35E3R7-LHzIlS2mFJfsf1PYsL8SOXTFIR-Rt3QquQuYg1ZA/exec";
 const RESULTS_KEY = "kostochka-2026";
-const RESULTS_SCHEMA = 1;
+const RESULTS_SCHEMA = 2; /* 2: avatar → country + university */
 const APP_VERSION = "web-2026.11.22";
 /* =====================================================================
    КОНФИГУРАЦИЯ КОНТЕНТА
@@ -1602,7 +1604,28 @@ const STOP = new Set(("и а но да или не ни же ли бы б то �
 
 /* ===================================================================== */
 const LS_KEY = "rki-reading-trainer-v1";
-const AVATARS = ["🙂","😎","🦁","🐱","🦊","🐼","🦉","🌷","🌙","⭐","📚","🍑"];
+/* страна: флаг + название (рус.) + фарси; OTHER — ввод вручную */
+const COUNTRIES = [
+  { code:"IR", flag:"🇮🇷", ru:"Иран", fa:"ایران" },
+  { code:"RU", flag:"🇷🇺", ru:"Россия", fa:"روسیه" },
+  { code:"AF", flag:"🇦🇫", ru:"Афганистан", fa:"افغانستان" },
+  { code:"TJ", flag:"🇹🇯", ru:"Таджикистан", fa:"تاجیکستان" },
+  { code:"OTHER", flag:"🌍", ru:"Другая", fa:"دیگر" }
+];
+const UNIVERSITIES = [
+  { ru:"Университет имени Алламе Табатабаи (Тегеран)", fa:"دانشگاه علامه طباطبائی (تهران)" },
+  { ru:"МПГУ (Москва)", fa:"دانشگاه دولتی تربیت معلم مسکو" }
+];
+function countryOf(s){ s = s||S; const c = COUNTRIES.find(x=>x.code===s.countryCode); if(!c) return null; return c.code==="OTHER" ? { code:"OTHER", flag:c.flag, ru:String(s.countryOther||"").trim(), fa:"" } : c; }
+function countryName(s){ const c = countryOf(s); return c ? c.ru : ""; }
+function countryFlag(s){ const c = countryOf(s); return c ? c.flag : ""; }
+function profileProblem(s){ s = s||S;
+  if(!String(s.name||"").trim()) return { msg:"Сначала напиши своё имя · نامت را بنویس", el:"#nameInp" };
+  if(!countryOf(s)) return { msg:"Выбери страну · کشورت را انتخاب کن", el:".ctyBtn" };
+  if(!countryName(s)) return { msg:"Напиши название страны · نام کشور را بنویس", el:"#countryInp" };
+  if(!String(s.university||"").trim()) return { msg:"Напиши университет или «—» · نام دانشگاه یا «—» را بنویس", el:"#uniInp" };
+  return null; }
+function profileComplete(s){ return !profileProblem(s); }
 const LEVELS = ["A1","A2","B1","B2"];
 const ORDER = [0, "text", 1, 2, 3, 4, 5, "send"];
 const PLABEL = { 0: "0", text: "📖", 1: "1", 2: "2", 3: "3", 4: "4", 5: "5", send: "✉" };
@@ -1614,7 +1637,12 @@ function load(){
   let s; try{ s = JSON.parse(localStorage.getItem(LS_KEY)||"null"); }catch(e){ s=null; }
   if(!s || typeof s!=="object") s = {};
   s.textId = s.textId || TEXTS[0].id; s.screen = (s.screen===undefined)?"route":s.screen;
-  s.name = s.name||""; s.group = s.group||""; s.avatar = s.avatar||AVATARS[0]; s.level = LEVELS.includes(s.level)?s.level:"A2"; s.profileSaved = !!s.profileSaved && !!String(s.name).trim(); s.teacherEmail = s.teacherEmail||""; s.yo = !!s.yo; s.fa = (s.fa===undefined)?true:s.fa;
+  s.name = s.name||""; s.group = s.group||""; delete s.avatar; /* старые профили: аватар больше не нужен */
+  s.countryCode = COUNTRIES.some(c=>c.code===s.countryCode) ? s.countryCode : ""; s.countryOther = s.countryOther||""; s.university = s.university||"";
+  s.level = LEVELS.includes(s.level)?s.level:"A2";
+  /* профиль без страны/университета (сохранён старой версией) — просим дополнить на экране маршрута */
+  if(s.profileSaved && !profileComplete(s)){ s.profileSaved = false; s.profileUpgrade = true; if(s.screen!=="route") s.screen = "route"; }
+  s.profileSaved = !!s.profileSaved && profileComplete(s); s.teacherEmail = s.teacherEmail||""; s.yo = !!s.yo; s.fa = (s.fa===undefined)?true:s.fa;
   s.texts = s.texts||{};
   return s;
 }
@@ -1751,18 +1779,26 @@ function textDetails(){ return `<details><summary>📖 Показать текс
 function profileHtml(){
   if(S.profileSaved && String(S.name||"").trim()){
     return `<div class="info" id="profCard" style="display:flex;align-items:center;gap:12px">
-      <span style="font-size:34px" aria-hidden="true">${esc(S.avatar)}</span>
-      <span style="flex:1"><b>${esc(S.name)}</b><br><span class="muted">Уровень ${esc(S.level)}${S.group?` · группа ${esc(S.group)}`:""}</span></span>
+      <span style="font-size:34px" aria-hidden="true">${esc(countryFlag())}</span>
+      <span style="flex:1"><b>${esc(S.name)}</b><br><span class="muted">${esc(countryName())} · ${esc(String(S.university||"").trim())}<br>Уровень ${esc(S.level)}${S.group?` · группа ${esc(S.group)}`:""}</span></span>
       <button class="btn sec" id="profEdit" style="min-height:44px">Сменить</button></div>`;
   }
-  return `<h2 style="margin-top:12px">Кто ты?</h2>
-    <label class="lbl" for="nameInp">Твоё имя</label>
+  const fl = t => `<span class="faL" lang="fa" dir="rtl">${t}</span>`;
+  const flB = t => `<div class="faL" lang="fa" dir="rtl" style="text-align:right;margin-top:2px">${t}</div>`;
+  return `<h2 style="margin-top:12px">Кто ты? · ${fl("دربارهٔ خودت")}</h2>
+    ${S.profileUpgrade?`<div class="note" id="profUpgrade">Добавь, пожалуйста, страну и университет — и продолжай с того же места. ${flB("لطفاً کشور و دانشگاهت را اضافه کن و از همان‌جا ادامه بده.")}</div>`:""}
+    <label class="lbl" for="nameInp">Твоё имя · ${fl("نام و نام خانوادگی")}</label>
     <input type="text" id="nameInp" autocomplete="name" placeholder="Имя и фамилия" value="${esc(S.name)}">
-    <div class="lbl">Аватар</div>
-    <div class="toggles" role="group" aria-label="Аватар" style="flex-wrap:wrap">${AVATARS.map(a=>`<button type="button" class="chip avBtn${a===S.avatar?" on":""}" data-av="${a}" aria-pressed="${a===S.avatar}" style="font-size:24px;min-width:48px;min-height:48px">${a}</button>`).join("")}</div>
-    <label class="lbl" for="levelSel">Уровень русского языка</label>
+    <div class="lbl" id="ctyLbl">Страна · ${fl("کشور")}</div>
+    <div class="toggles" role="group" aria-labelledby="ctyLbl" style="flex-wrap:wrap">${COUNTRIES.map(c=>`<button type="button" class="chip ctyBtn${c.code===S.countryCode?" on":""}" data-c="${c.code}" aria-pressed="${c.code===S.countryCode}"><span aria-hidden="true">${c.flag}</span> ${esc(c.ru)} · ${fl(c.fa)}</button>`).join("")}</div>
+    <input type="text" id="countryInp" class="${S.countryCode==="OTHER"?"":"hidden"}" autocomplete="country-name" placeholder="Напиши страну · نام کشور را بنویس" value="${esc(S.countryOther)}" aria-label="Другая страна">
+    <label class="lbl" for="uniInp">Университет · ${fl("دانشگاه")}</label>
+    <input type="text" id="uniInp" list="uniList" autocomplete="off" placeholder="Начни писать или выбери" value="${esc(S.university)}">
+    <datalist id="uniList">${UNIVERSITIES.map(u=>`<option value="${esc(u.ru)}" label="${esc(u.fa)}"></option>`).join("")}</datalist>
+    <div class="muted" style="font-size:14px;margin-top:4px">Не учишься в университете — поставь «—». ${flB("اگر دانشجو نیستی، «—» بگذار.")}</div>
+    <label class="lbl" for="levelSel">Уровень русского языка · ${fl("سطح زبان روسی")}</label>
     <select id="levelSel" style="font-size:16px;min-height:44px;width:100%">${LEVELS.map(l=>`<option value="${l}"${l===S.level?" selected":""}>${l}</option>`).join("")}</select>
-    <label class="lbl" for="groupInp">Группа <span class="muted">(необязательно)</span></label>
+    <label class="lbl" for="groupInp">Группа <span class="muted">(необязательно)</span> · ${fl("گروه (اختیاری)")}</label>
     <input type="text" id="groupInp" placeholder="Например: А2-1" value="${esc(S.group)}">`;
 }
 
@@ -1781,7 +1817,7 @@ route(){
     <h1>Тренажёр чтения · Л. Н. Толстой</h1>
     <div class="muted">5 рассказов · РКИ · шаги 0–5: слова → текст → поступок → слова автора → фраза → голос</div>
     ${profileHtml()}
-    ${prof?"":`<button class="btn block" id="profSave">Сохранить и начать →</button>`}
+    ${prof?"":`<button class="btn block" id="profSave">Сохранить и начать →<span lang="fa" dir="rtl" style="display:block;font-weight:400;font-size:15px;font-family:Tahoma,'Noto Naskh Arabic',sans-serif">ذخیره و شروع</span></button>`}
   </div>
   ${OPEN_ALL?`<div class="note">Режим преподавателя: открыты все тексты (?open=all).</div>`:""}
   ${cards}
@@ -1981,6 +2017,7 @@ send(){
     <div class="info">Ответ отправляется <b>лично преподавателю</b>, не в общую группу. Так вежливая «правильная» фраза не обгоняет слово автора, и не страшно ошибиться.</div>
     <label class="lbl" for="name2">Имя студента</label>
     <input type="text" id="name2" value="${esc(S.name)}" placeholder="Имя и фамилия">
+    <div class="muted" id="sendProfile" style="margin-top:4px">${esc(countryFlag())} ${esc(countryName())} · ${esc(String(S.university||"").trim())}</div>
     <label class="lbl" for="group2">Группа</label>
     <input type="text" id="group2" value="${esc(S.group)}" placeholder="Например: А2-1 (необязательно)">
     <div class="muted" id="resStatus" style="margin:8px 0">${esc(resultsStatusText())}</div>
@@ -2051,6 +2088,7 @@ function buildSummary(){
   const L = [];
   L.push(`РКИ · «${T.title}» (${T.author}) — ответ преподавателю`);
   L.push(`Студент: ${S.name||"(имя не указано)"}${S.group?` (группа ${S.group})`:""}, уровень ${S.level}`);
+  if(countryName()||S.university) L.push(`Страна: ${countryFlag()} ${countryName()} · университет: ${String(S.university||"").trim()||"—"}`);
   L.push(`Дата: ${dt}`);
   if(stageOf(T.id) && T.id!=="kostochka") L.push(`Этап: ${stageOf(T.id)}`);
   L.push("");
@@ -2084,10 +2122,10 @@ function buildSummary(){
 }
 
 /* ---------- навигация ---------- */
-function needsName(screen){ return ORDER.some(k=>String(k)===String(screen)) && !String(S.name||"").trim(); }
+function needsName(screen){ return ORDER.some(k=>String(k)===String(screen)) && !profileComplete(); }
 function go(screen){
-  if(needsName(screen)){ toast("Сначала напиши своё имя"); screen = "route"; }
-  else if(S.screen==="start" && screen!=="start" && String(S.name||"").trim()){ S.name=S.name.trim(); S.group=String(S.group||"").trim(); S.profileSaved=true; }
+  if(needsName(screen)){ toast(profileProblem().msg); screen = "route"; }
+  else if(S.screen==="start" && screen!=="start" && profileComplete()){ S.name=S.name.trim(); S.group=String(S.group||"").trim(); S.profileSaved=true; S.profileUpgrade=false; }
   stopRecording(true); const _au=$("#ttsAudio"); if(_au){ try{ _au.pause(); }catch(e){} } S.screen = screen;
   if(screen!=="start" && ORDER.some(k=>String(k)===String(screen))) resultsEnsureSession();
   if(screen==="send") resultsFinish();
@@ -2136,6 +2174,23 @@ function prev(){
 }
 function firstUndone(){ const d = st().done; for(const k of ORDER){ if(!d[k]) return k; } return "send"; }
 
+/* ---------- профиль: страна, университет ---------- */
+function bindProfile(){
+  document.querySelectorAll(".ctyBtn").forEach(b=>b.addEventListener("click",()=>{ S.countryCode=b.dataset.c; save();
+    document.querySelectorAll(".ctyBtn").forEach(x=>{ const on=x.dataset.c===S.countryCode; x.classList.toggle("on",on); x.setAttribute("aria-pressed",on); });
+    const ci=$("#countryInp"); if(ci){ ci.classList.toggle("hidden", S.countryCode!=="OTHER"); if(S.countryCode==="OTHER") ci.focus(); } }));
+  const ci=$("#countryInp"); if(ci) ci.addEventListener("input",e=>{ S.countryOther=e.target.value; save(); });
+  const ui=$("#uniInp"); if(ui) ui.addEventListener("input",e=>{ S.university=e.target.value; save(); });
+}
+function saveProf(){
+  const p = profileProblem();
+  if(p){ toast(p.msg); const el=$(p.el); if(el){ el.focus(); try{ el.scrollIntoView({block:"center"}); }catch(e){} } return false; }
+  S.name=S.name.trim(); S.group=String(S.group||"").trim(); S.countryOther=String(S.countryOther||"").trim(); S.university=String(S.university||"").trim();
+  S.profileSaved=true; S.profileUpgrade=false; save();
+  resultsSchedule(); /* если по тексту уже идёт сессия — обновить в таблице страну/университет */
+  return true;
+}
+
 /* ---------- обработчики ---------- */
 function bind(key){
   const s = st();
@@ -2144,11 +2199,8 @@ function bind(key){
     on("#nameInp","input",e=>{S.name=e.target.value; save();});
     on("#groupInp","input",e=>{S.group=e.target.value; save();});
     on("#levelSel","change",e=>{S.level=e.target.value; save();});
-    document.querySelectorAll(".avBtn").forEach(b=>b.addEventListener("click",()=>{ S.avatar=b.dataset.av; save();
-      document.querySelectorAll(".avBtn").forEach(x=>{ const on=x.dataset.av===S.avatar; x.classList.toggle("on",on); x.setAttribute("aria-pressed",on); }); }));
+    bindProfile();
     on("#profEdit","click",()=>{ S.profileSaved=false; save(); render(); const n=$("#nameInp"); if(n) n.focus(); });
-    const saveProf = ()=>{ if(!String(S.name||"").trim()){ toast("Сначала напиши своё имя"); const n=$("#nameInp"); if(n) n.focus(); return false; }
-      S.name=S.name.trim(); S.group=String(S.group||"").trim(); S.profileSaved=true; save(); return true; };
     on("#profSave","click",()=>{ if(saveProf()){ const id = ROUTE_IDS.find(i=>textUnlocked(i)&&!textFinished(i)) || ROUTE_IDS[0]; openText(id); } });
     document.querySelectorAll(".routeB").forEach(b=>b.addEventListener("click",()=>{ if(saveProf()) openText(b.dataset.id); }));
   }
@@ -2157,10 +2209,9 @@ function bind(key){
     on("#nameInp","input",e=>{S.name=e.target.value; save();});
     on("#groupInp","input",e=>{S.group=e.target.value; save();});
     on("#levelSel","change",e=>{S.level=e.target.value; save();});
-    document.querySelectorAll(".avBtn").forEach(b=>b.addEventListener("click",()=>{ S.avatar=b.dataset.av; save();
-      document.querySelectorAll(".avBtn").forEach(x=>{ const on=x.dataset.av===S.avatar; x.classList.toggle("on",on); x.setAttribute("aria-pressed",on); }); }));
+    bindProfile();
     on("#profEdit","click",()=>{ S.profileSaved=false; save(); render(); const n=$("#nameInp"); if(n) n.focus(); });
-    on("#goStart","click",()=>go(firstUndone()));
+    on("#goStart","click",()=>{ if(S.profileSaved || saveProf()) go(firstUndone()); });
     on("#reset","click",()=>{ if(confirm("Стереть все ответы по этому тексту?")){ S.texts[T.id]=blankText(); save(); idbDel(T.id); render(); /* новая попытка = новая сессия */ } });
   }
   if([0,1,2,3,4,5].includes(key)) bindFa();
@@ -2417,7 +2468,7 @@ async function resultsSendAudio(){
     if(blob.size > AUDIO_MAX_BYTES){ m.audioPending = false; m.audioSkipped = "too_big"; save(); toast("Запись больше 10 МБ — отправь файл преподавателю вручную"); continue; }
     const mime = (rec && rec.mime) || blob.type || "audio/webm";
     const body = { key: RESULTS_KEY, schema_version: RESULTS_SCHEMA, type: "audio", source: "web", session_id: m.sid,
-      text_id: id, text_title: tx.title, stage: stageOf(id), student: (S.name||"").trim(), student_id: "", avatar: S.avatar||"", level: S.level||"", group: (S.group||"").trim(),
+      text_id: id, text_title: tx.title, stage: stageOf(id), student: (S.name||"").trim(), student_id: "", country: countryName(), university: String(S.university||"").trim(), level: S.level||"", group: (S.group||"").trim(),
       step: 4, task_id: "voice", mime_type: mime, ext: extFor(mime), duration_sec: (ts.s4 && ts.s4.dur) || 0,
       client_ts: new Date().toISOString(), audio_base64: await blobToBase64(blob) };
     try{ await resultsPost(body); m.audioPending = false; m.audioSentAt = new Date().toISOString(); save(); }catch(e){ break; /* повторим позже */ }
@@ -2474,7 +2525,7 @@ function buildResultsPayload(event){
     ...[0,1,2,3,4,5].filter(n=>(s.faTask||{})[n]).map(n=>A(n, "task_fa_"+n, "открыта формулировка на фарси", "", "", ""))
   ];
   return { key: RESULTS_KEY, schema_version: RESULTS_SCHEMA, type: "snapshot", event, source: "web", app_version: APP_VERSION,
-    session_id: m.sid, text_id: T.id, student: (S.name||"").trim(), student_id: "", avatar: S.avatar||"", level: S.level||"", group: (S.group||"").trim(), stage: stageOf(T.id), text_title: T.title, text_order: ROUTE_IDS.indexOf(T.id)+1,
+    session_id: m.sid, text_id: T.id, student: (S.name||"").trim(), student_id: "", country: countryName(), university: String(S.university||"").trim(), level: S.level||"", group: (S.group||"").trim(), stage: stageOf(T.id), text_title: T.title, text_order: ROUTE_IDS.indexOf(T.id)+1,
     started_at: m.startedAt, finished_at: m.finishedAt || "", client_ts: now, from_queue: false,
     user_agent: (navigator.userAgent||"").slice(0,200), result, answers };
 }
