@@ -2370,8 +2370,9 @@ function resultsSchedule(){
 function resultsStatusText(){
   const m = stMeta(); const pending = Object.keys(rqLoad()).length;
   if(!resultsConfigured()) return "Таблица результатов ещё не подключена — ответы сохранены на телефоне и уйдут позже.";
-  if(pending && RES_BUSY) return "⏳ Отправляем результаты…";
-  if(pending) return "⏳ Результаты ждут отправки (нет связи?) — уйдут автоматически.";
+  if(pending){ /* «нет связи?» — только если отправка действительно не удалась (retry) и сейчас не идёт повтор */
+    const failed = Object.values(rqLoad()).some(p=>p && p.retry);
+    return (RES_BUSY || RES_AGAIN || !failed) ? "⏳ Отправляем результаты…" : "⏳ Результаты ждут отправки (нет связи?) — уйдут автоматически."; }
   if(Object.values(S.texts).some(t=>t.meta&&t.meta.audioPending)) return "⏳ Голосовая запись ждёт отправки.";
   if(m.lastSentAt) return "✅ Результаты отправлены в таблицу преподавателя" + (m.audioSentAt ? " (голос тоже)." : ".");
   return "Результаты будут отправлены в таблицу преподавателя автоматически.";
@@ -2390,7 +2391,7 @@ async function resultsPost(obj){
 async function resultsFlush(manual){
   if(RES_BUSY){ RES_AGAIN = true; return; }  /* идёт отправка — повторим сразу после неё, а не через 30 с */
   if(!resultsConfigured()){ if(manual) toast("Адрес таблицы ещё не вписан в тренажёр"); resultsShowStatus(); return; }
-  RES_BUSY = true;
+  RES_BUSY = true; resultsShowStatus();
   try{
     const q = rqLoad();
     for(const sid of Object.keys(q)){
