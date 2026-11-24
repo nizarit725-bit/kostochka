@@ -56,6 +56,15 @@ label.lbl,div.lbl{display:block;font-weight:600;font-size:15px;margin:10px 0 4px
 .story .w.on{background:var(--sel);box-shadow:0 0 0 2px #e5b800}
 .story .w.hit{background:var(--okbg);box-shadow:0 0 0 2px var(--ok)}
 .story .w.father{background:#f1ebff}
+.story .fw{color:#3d4542}
+.model{background:#fafaf7;border:1px dashed var(--line);border-left:5px solid #9aa5a1;border-radius:10px;padding:8px 12px;font-size:16px;margin:10px 0}
+.model u{text-decoration-color:var(--accent);text-underline-offset:3px}
+.slot::placeholder{color:#9aa19e;font-style:italic;opacity:1}
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch}
+.ovl .card{max-width:640px;margin:8px auto 24px}
+.ovl ol{padding-left:22px;margin:6px 0}
+.ovl li{margin:4px 0}
+.ovl .faL{display:block;direction:rtl;text-align:right;font-family:Tahoma,"Noto Naskh Arabic","Segoe UI",sans-serif;font-size:16px;color:#3d4542}
 .src{font-size:14px;color:var(--muted);margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
 .toggles{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
 .chip{border:2px solid var(--line);background:#fff;border-radius:999px;min-height:44px;padding:4px 14px;font-size:15px;cursor:pointer;color:var(--ink)}
@@ -113,7 +122,7 @@ nav.bottom .btn{flex:1;margin:0}
 @media (max-width:520px){.pcards{grid-template-columns:1fr}}
 @media print{
   body{background:#fff;padding:0;font-size:13pt}
-  header,main,nav.bottom,.toast{display:none!important}
+  header,main,nav.bottom,.toast,.ovl{display:none!important}
   #print{display:block!important;padding:0}
   .pcards{grid-template-columns:1fr 1fr}
   .pcard{border:1.5pt dashed #000}
@@ -137,6 +146,7 @@ nav.bottom .btn{flex:1;margin:0}
     <button class="hbtn" id="hText" hidden data-nojs-hidden title="Текст рассказа">📖</button>
     <button class="hbtn" id="hCards" hidden data-nojs-hidden title="Карточки для печати">🖨</button>
     <button class="hbtn" id="hAbout" hidden data-nojs-hidden title="О методике">ℹ︎</button>
+    <button class="hbtn" id="hRules" hidden data-nojs-hidden title="Как работать" aria-label="Как работать">?</button>
   </div>
   <div class="progress" id="progress" aria-label="Шаги"></div>
 </header>
@@ -203,13 +213,14 @@ nav.bottom .btn{flex:1;margin:0}
 <p style="color:#5d6763;font-size:15px">Напиши ответ словами из рассказа.</p><div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div><div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div>
 
 <div style="font-size:14px;font-weight:700;color:#2f5d50;text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px;margin-top:18px">Шаг 2 · Слова текста</div>
-<div style="font-size:19px;font-weight:600;margin:4px 0 10px">Какие слова говорят, что поступок замечен?</div>
-<p style="color:#5d6763;font-size:15px">Найди эти слова в тексте рассказа (подчеркни на распечатке) и выпиши их.</p><div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div><div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div>
+<div style="font-size:19px;font-weight:600;margin:4px 0 10px">Найди слова, которые показывают чувства Вани и оценку его поступка.</div>
+<p style="color:#5d6763;font-size:15px">Подчеркни в тексте до 6 слов и выпиши их. Служебные слова (в, и, не, он…) не выписывай.</p><div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div><div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div>
 
 <div style="font-size:14px;font-weight:700;color:#2f5d50;text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px;margin-top:18px">Шаг 3 · Письмо по рамке</div>
 <div style="font-size:19px;font-weight:600;margin:4px 0 10px">Напиши одну фразу по рамке</div>
-<div style="font-size:18px;line-height:1.6;background:#fafaf7;border:1px dashed #888;border-radius:10px;padding:10px 12px">Ваня сделал <span style="display:inline-block;vertical-align:top;min-width:170px;margin:0 4px 6px"><span style="display:block;height:30px;border-bottom:1px solid #555">&nbsp;</span><span style="display:block;color:#5d6763;font-size:13px;line-height:1.3">что сделал Ваня</span></span>. Это <span style="display:inline-block;vertical-align:top;min-width:170px;margin:0 4px 6px"><span style="display:block;height:30px;border-bottom:1px solid #555">&nbsp;</span><span style="display:block;color:#5d6763;font-size:13px;line-height:1.3">твоё слово: какой это поступок</span></span>, потому что в тексте сказано: «<span style="display:inline-block;vertical-align:top;min-width:170px;margin:0 4px 6px"><span style="display:block;height:30px;border-bottom:1px solid #555">&nbsp;</span><span style="display:block;color:#5d6763;font-size:13px;line-height:1.3">слова из рассказа (цитата)</span></span>».</div>
+<div style="font-size:18px;line-height:1.6;background:#fafaf7;border:1px dashed #888;border-radius:10px;padding:10px 12px">Ваня сделал <span style="display:inline-block;vertical-align:top;min-width:170px;margin:0 4px 6px"><span style="display:block;height:30px;border-bottom:1px solid #555">&nbsp;</span><span style="display:block;color:#5d6763;font-size:13px;line-height:1.3">например: доброе дело</span></span>. Это <span style="display:inline-block;vertical-align:top;min-width:170px;margin:0 4px 6px"><span style="display:block;height:30px;border-bottom:1px solid #555">&nbsp;</span><span style="display:block;color:#5d6763;font-size:13px;line-height:1.3">например: хорошо</span></span>, потому что в тексте сказано: «<span style="display:inline-block;vertical-align:top;min-width:170px;margin:0 4px 6px"><span style="display:block;height:30px;border-bottom:1px solid #555">&nbsp;</span><span style="display:block;color:#5d6763;font-size:13px;line-height:1.3">например: Маша донесла бабушке тяжёлую сумку</span></span>».</div>
 <p style="color:#5d6763;font-size:15px;margin-top:8px">Рамка: Ваня сделал …. Это …, потому что в тексте сказано: «…».</p>
+<p style="font-size:16px;margin:6px 0">Образец (другая история — не копируй): Маша сделала <u>доброе дело</u>. Это <u>хорошо</u>, потому что в тексте сказано: «<u>Маша донесла бабушке тяжёлую сумку</u>».</p>
 <div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div><div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div><div style="border-bottom:1px solid #999;height:34px;margin:0 0 4px"></div>
 <div style="background:#e7f0ec;border-left:5px solid #2f5d50;border-radius:10px;padding:10px 12px;font-size:16px;margin:10px 0">Опирайся на слова рассказа: без слова из текста ответ не засчитывается (проверка — на шаге 5). Не нужно защищать или осуждать Ваню — нужно опереться на слова автора.</div>
 
@@ -255,8 +266,8 @@ nav.bottom .btn{flex:1;margin:0}
    ===================================================================== */
 const RESULTS_URL = "https://script.google.com/macros/s/AKfycbz8-BQmqrw4DlOqifMBGqF35E3R7-LHzIlS2mFJfsf1PYsL8SOXTFIR-Rt3QquQuYg1ZA/exec";
 const RESULTS_KEY = "kostochka-2026";
-const RESULTS_SCHEMA = 2; /* 2: avatar → country + university */
-const APP_VERSION = "web-2026.11.22";
+const RESULTS_SCHEMA = 3; /* 2: avatar → country + university; 3: + rules_opened, rules_opened_steps */
+const APP_VERSION = "web-2026.11.24";
 /* =====================================================================
    КОНФИГУРАЦИЯ КОНТЕНТА
    Весь учебный материал — здесь. Чтобы добавить другой короткий текст,
@@ -315,7 +326,8 @@ const TEXTS = [
            { label: "слив…", stems: ["слив"] },
            { label: "съел", stems: ["съел","съе","съест"] }
          ] },
-    2: { question: "Какие слова говорят, что поступок замечен?",
+    2: { question: "Найди слова, которые показывают чувства Вани и оценку его поступка.",
+         short: "Слова: чувства Вани и оценка",
          reference: [
            { word: "нехорошо",  stems: ["нехорош"] },
            { word: "покраснел", stems: ["покрасне"] },
@@ -325,7 +337,10 @@ const TEXTS = [
     3: { title: "Письмо по рамке",
          /* {1},{2},{3} — поля студента; остальное — неизменяемая рамка */
          frame: "Ваня сделал {1}. Это {2}, потому что в тексте сказано: «{3}».",
-         slots: { 1: "что сделал Ваня", 2: "твоё слово: какой это поступок", 3: "слова из рассказа (цитата)" } },
+         /* slots — что пишется в поле (для преподавателя и aria-label); в поле видно серый пример из model */
+         slots: { 1: "что сделал Ваня", 2: "твоё слово: какой это поступок", 3: "слова из рассказа (цитата)" },
+         /* образец на ДРУГОЙ истории (не из рассказа), чтобы его нельзя было списать как ответ */
+         model: { frame: "Маша сделала {1}. Это {2}, потому что в тексте сказано: «{3}».", fill: { 1: "доброе дело", 2: "хорошо", 3: "Маша донесла бабушке тяжёлую сумку" } } },
     4: { minSec: 30, maxSec: 45 },
     5: { question: "Какие слова рассказа использованы?" }
   },
@@ -512,7 +527,8 @@ const TEXTS = [
    ]
   },
   "2": {
-   "question": "Какие слова рассказа показывают, как лев относится к собачке? Прямого слова оценки в тексте нет — найди описание.",
+   "question": "Найди слова, которые показывают, как лев относится к собачке. Слова оценки в тексте нет — ищи, что лев делает.",
+   "short": "Слова: как лев относится к собачке",
    "reference": [
     {
      "word": "ел корм",
@@ -538,6 +554,7 @@ const TEXTS = [
   "3": {
    "title": "Письмо по рамке",
    "frame": "Лев {1}. Это {2}, потому что в тексте сказано: «{3}».",
+   "model": {"frame": "Маша {1}. Это {2}, потому что в тексте сказано: «{3}».", "fill": {"1": "помогла бабушке", "2": "добрый поступок", "3": "Маша донесла бабушке тяжёлую сумку"}},
    "slots": {
     "1": "что сделал лев",
     "2": "твоё слово: какой это поступок",
@@ -805,7 +822,8 @@ const TEXTS = [
    ]
   },
   "2": {
-   "question": "Кто оценивает Филипка? Раздели: слова учителя и слова самого Филипка о себе.",
+   "question": "Найди слова оценки: что говорит о Филипке учитель и что Филипок говорит о себе.",
+   "short": "Слова: чья оценка",
    "rows": [
     "Учитель",
     "Филипок о себе"
@@ -852,6 +870,7 @@ const TEXTS = [
   "3": {
    "title": "Письмо по рамке",
    "frame": "Филипок {1}. {2}, потому что в тексте сказано: «{3}».",
+   "model": {"frame": "Маша {1}. {2}, потому что в тексте сказано: «{3}».", "fill": {"1": "помогла бабушке", "2": "Бабушка её похвалила", "3": "Умница, внучка!"}},
    "slots": {
     "1": "что сделал Филипок",
     "2": "чья оценка и какая (например: учитель его похвалил)",
@@ -1107,7 +1126,8 @@ const TEXTS = [
    ]
   },
   "2": {
-   "question": "Слова оценки в тексте нет. Какие слова показывают угрозу отца и реакцию людей на корабле?",
+   "question": "Найди слова, которые показывают угрозу отца и чувства людей на корабле. Слова оценки в тексте нет.",
+   "short": "Слова: угроза отца и чувства людей",
    "rows": [
     "Угроза отца",
     "Реакция людей"
@@ -1132,6 +1152,7 @@ const TEXTS = [
   "3": {
    "title": "Письмо по рамке",
    "frame": "Мальчик {1}. Это {2}, потому что в тексте сказано: «{3}».",
+   "model": {"frame": "Маша {1}. Это {2}, потому что в тексте сказано: «{3}».", "fill": {"1": "помогла бабушке", "2": "добрый поступок", "3": "Маша донесла бабушке тяжёлую сумку"}},
    "slots": {
     "1": "что сделал мальчик",
     "2": "твоё слово: какой это поступок",
@@ -1400,7 +1421,8 @@ const TEXTS = [
    ]
   },
   "2": {
-   "question": "Прямой оценки в тексте нет. Какие слова показывают реакцию людей на корабле?",
+   "question": "Найди слова, которые показывают чувства людей на корабле и чем кончился выстрел. Слова оценки в тексте нет.",
+   "short": "Слова: чувства людей и итог",
    "reference": [
     {
      "word": "замерли от страха",
@@ -1425,6 +1447,7 @@ const TEXTS = [
   "3": {
    "title": "Письмо по рамке",
    "frame": "Артиллерист {1}. Это {2}, потому что в тексте сказано: «{3}».",
+   "model": {"frame": "Маша {1}. Это {2}, потому что в тексте сказано: «{3}».", "fill": {"1": "помогла бабушке", "2": "добрый поступок", "3": "Маша донесла бабушке тяжёлую сумку"}},
    "slots": {
     "1": "что сделал артиллерист",
     "2": "твоё слово: какой это поступок",
@@ -1585,9 +1608,9 @@ function stageOf(id){ const r = ROUTE.find(x => x.ids.includes(id)); return r ? 
 function textFinished(id){ const t = S.texts[id]; return !!(t && ((t.meta && t.meta.finishedAt) || (t.done && t.done.send))); }
 function textUnlocked(id){ const i = ROUTE_IDS.indexOf(id); return OPEN_ALL || i <= 0 || textFinished(ROUTE_IDS[i-1]); }
 /* Фарси: формулировки заданий и подсказки по шагам. Сверено по словарям, см. farsi_review.md. */
-const FA_TASK = {"0": "کلمه‌های داستان را بخوان. وقتی معنیِ کلمه را فهمیدی، دکمهٔ «Понятно» را بزن.", "3": "یک جمله طبق قالب بنویس: قهرمان چه کرد، این چه نوع کاری است، و در متن چه آمده است (نقل‌قولِ دقیق از متن).", "4": "همان جمله را با صدای بلند بگو و ضبط کن: ۳۰ تا ۴۵ ثانیه. فایلِ صوتی فقط برای معلم فرستاده می‌شود.", "5": "ببین در جمله‌ات کدام کلمه‌ها از خودِ داستان هستند. بدونِ کلمه‌ای از متن، جواب پذیرفته نمی‌شود."};
-const FA_HINT = {"0": "روی کلمه بزن و توضیح و مثال را بخوان. ترجمهٔ فارسی فقط کمک است؛ کلمه را در متنِ داستان پیدا کن.", "1": "جواب را در متن پیدا کن و با همان کلمه‌های متن بنویس. فقط کار (فعل) را بنویس، نه نظرِ خودت را.", "2": "روی کلمه‌های متن بزن. دنبالِ کلمه‌هایی بگرد که نشان می‌دهند دیگران یا خودِ قهرمان چه واکنشی نشان می‌دهند یا چه احساسی دارند.", "3": "در خانهٔ اول کارِ قهرمان را با کلمه‌های متن بنویس. در خانهٔ دوم کلمهٔ خودت برای این کار. در خانهٔ سوم جمله‌ای را دقیقاً از متن بنویس.", "4": "اول جملهٔ نوشته‌شده را چند بار آرام بخوان، بعد ضبط را شروع کن. اگر خوب نشد، دوباره ضبط کن."};
-const FA_Q = {"kostochka": {"1": "وانیا وقتی هیچ‌کس در اتاق نبود چه کرد؟ با کلمه‌های داستان جواب بده.", "2": "کدام کلمه‌های داستان نشان می‌دهند که کارِ او دیده شد؟"}, "lev": {"1": "وقتی صاحبِ باغ‌وحش برای شیر گوشت انداخت، شیر چه کرد؟", "2": "کدام کلمه‌های داستان نشان می‌دهند که شیر با سگِ کوچک چه رفتاری دارد؟ در متن کلمهٔ ارزیابیِ مستقیم نیست؛ توصیف را پیدا کن."}, "filipok": {"1": "فیلیپوک چه کرد؟", "2": "چه کسی فیلیپوک را ارزیابی می‌کند؟ جدا کن: حرف‌های معلم و حرف‌های خودِ فیلیپوک دربارهٔ خودش.", "3": "همچنین نشان بده این ارزیابی از کیست: معلم یا خودِ فیلیپوک."}, "pryzhok": {"1": "پسر چه کرد؟", "2": "در متن کلمهٔ ارزیابی نیست. کدام کلمه‌ها تهدیدِ پدر و واکنشِ مردم روی کشتی را نشان می‌دهند؟"}, "akula": {"1": "توپچی، پدرِ پسر، چه کرد؟", "2": "در متن ارزیابیِ مستقیم نیست. کدام کلمه‌ها واکنشِ مردم روی کشتی را نشان می‌دهند؟"}};
+const FA_TASK = {"0": "کلمه‌های داستان را بخوان. وقتی معنیِ کلمه را فهمیدی، دکمهٔ «Понятно» را بزن.", "3": "یک جمله طبق قالب بنویس: قهرمان چه کرد، تو این کار را چطور ارزیابی می‌کنی، و در متن دقیقاً چه آمده است. نمونه دربارهٔ داستانِ دیگری است؛ آن را کپی نکن، دربارهٔ داستانِ خودت بنویس.", "4": "همان جمله را با صدای بلند بگو و ضبط کن: ۳۰ تا ۴۵ ثانیه. فایلِ صوتی فقط برای معلم فرستاده می‌شود.", "5": "ببین در جمله‌ات کدام کلمه‌ها از خودِ داستان هستند. بدونِ کلمه‌ای از متن، جواب پذیرفته نمی‌شود."};
+const FA_HINT = {"0": "روی کلمه بزن و توضیح و مثال را بخوان. ترجمهٔ فارسی فقط کمک است؛ کلمه را در متنِ داستان پیدا کن.", "1": "جواب را در متن پیدا کن و با همان کلمه‌های متن بنویس. فقط کار (فعل) را بنویس، نه نظرِ خودت را.", "2": "روی کلمه‌های متن بزن؛ حداکثر ۶ کلمه. کلمه‌های کوچکِ دستوری (حرفِ اضافه، حرفِ ربط، ضمیر) انتخاب نمی‌شوند. دنبالِ کلمه‌هایی بگرد که احساس یا ارزیابی را نشان می‌دهند. اگر اشتباه زدی، دوباره روی همان کلمه بزن.", "3": "در خانهٔ اول بنویس قهرمان چه کرد (با کلمه‌های متن). در خانهٔ دوم ارزیابیِ این کار را بنویس. در خانهٔ سوم جمله‌ای را دقیقاً از متن بنویس. کلمه‌های خاکستری فقط مثال‌اند؛ آن‌ها را ننویس. نامِ قهرمان و «Это» در قالب هست؛ دوباره ننویس.", "4": "اول جملهٔ نوشته‌شده را چند بار آرام بخوان، بعد ضبط را شروع کن. اگر خوب نشد، دوباره ضبط کن."};
+const FA_Q = {"kostochka": {"1": "وانیا وقتی هیچ‌کس در اتاق نبود چه کرد؟ با کلمه‌های داستان جواب بده.", "2": "کلمه‌هایی را پیدا کن که احساساتِ وانیا و ارزیابیِ کارِ او را نشان می‌دهند."}, "lev": {"1": "وقتی صاحبِ باغ‌وحش برای شیر گوشت انداخت، شیر چه کرد؟", "2": "کلمه‌هایی را پیدا کن که نشان می‌دهند شیر با سگِ کوچک چه رفتاری دارد. در متن کلمهٔ ارزیابی نیست؛ ببین شیر چه می‌کند."}, "filipok": {"1": "فیلیپوک چه کرد؟", "2": "کلمه‌های ارزیابی را پیدا کن: معلم دربارهٔ فیلیپوک چه می‌گوید و فیلیپوک دربارهٔ خودش چه می‌گوید.", "3": "همچنین نشان بده این ارزیابی از کیست: معلم یا خودِ فیلیپوک."}, "pryzhok": {"1": "پسر چه کرد؟", "2": "کلمه‌هایی را پیدا کن که تهدیدِ پدر و احساساتِ مردم روی کشتی را نشان می‌دهند. در متن کلمهٔ ارزیابی نیست."}, "akula": {"1": "توپچی، پدرِ پسر، چه کرد؟", "2": "کلمه‌هایی را پیدا کن که احساساتِ مردم روی کشتی و نتیجهٔ شلیک را نشان می‌دهند. در متن کلمهٔ ارزیابی نیست."}};
 function faTask(n){ const q = FA_Q[T.id] || {}; return [q[n] || FA_TASK[n] || "", n===3 && q[3] ? "" : ""].join("") + (n===3 && q[3] ? " " + q[3] : ""); }
 function faHint(n){ return n===5 ? FA_HELP : (FA_HINT[n] || ""); }
 function faBlock(n){ const s = st(); const h = (s.hints||{})[n], v = (s.faTask||{})[n];
@@ -1646,7 +1669,9 @@ function load(){
   s.texts = s.texts||{};
   return s;
 }
-function st(){ if(!S.texts[T.id]) S.texts[T.id]=blankText(); return S.texts[T.id]; }
+function st(){ if(!S.texts[T.id]) S.texts[T.id]=blankText(); const t = S.texts[T.id];
+  if(t.s2 && !Array.isArray(t.s2.sel)) t.s2.sel = []; /* испорченное сохранение шага 2 не должно ломать экран */
+  return t; }
 function openText(id){
   if(!textUnlocked(id)){ toast("Этот текст откроется после предыдущего"); return; }
   stopRecording(true); REC.blob = null;
@@ -1722,8 +1747,32 @@ function analyze(text){
   return { toks, key, other, markers: key.concat(other), weak: uniq("weak"), frame: uniq("frame"), dal: uniq("dal"), counted: key.length + other.length > 0 };
 }
 function phraseOf(s3){
-  return T.steps[3].frame.replace(/\{(\d)\}/g, (_,k)=> (s3[k]||"").trim() || "…");
+  return T.steps[3].frame.replace(/\{(\d)\}/g, (_,k)=> slotClean(k, s3[k]) || "…");
 }
+/* Убрать из поля то, что уже есть в рамке: «Ваня сделал …» / имя героя в поле 1, «Это …» в поле 2,
+   кавычки вокруг цитаты в поле 3, точку в конце. Сохранённые ответы не меняются — только фраза. */
+function slotClean(k, v){
+  let t = String(v||"").trim(); if(!t) return "";
+  const fr = T.steps[3].frame; const before = fr.split("{"+k+"}")[0].split(/\{\d\}/).pop();
+  if(k!=="3"){
+    const bw = words(before).map(norm);
+    for(let guard=0; guard<4; guard++){
+      const m = t.match(/^([А-Яа-яЁёA-Za-z]+)[\s,:—–-]*/);
+      if(!m || !bw.includes(norm(m[1]))) break;
+      t = t.slice(m[0].length);
+    }
+    t = t.replace(/[\s.,;:]+$/,"");
+  } else {
+    t = t.replace(/^[\s«"„“”']+/,"").replace(/[\s.»"“”']+$/,"");
+  }
+  return t.trim();
+}
+/* шаг 2: служебные слова не отмечаются; не больше S2_MAX слов */
+const S2_MAX = 6;
+const FUNC_EXTRA = new Set("ну уж ж ведь коли чтоб тех него нему ним ну-ка кто-то что-то сколько будто тому подле возле около мой моя моё мое мои твой твоя твоё твое твою наш наша ваш ваша чей".split(" "));
+function isFuncWord(w){ const n = norm(w); return STOP.has(n) || FUNC_EXTRA.has(n); }
+function s2Valid(s2){ const ws = storyWordsFlat(); return [...new Set((Array.isArray(s2.sel)?s2.sel:[]).filter(i => Number.isInteger(i) && ws[i] && !isFuncWord(ws[i])))]; }
+function s2CountHtml(n){ return n>S2_MAX ? `Отмечено: ${n}. Можно до ${S2_MAX} — сними лишние отметки.` : `Отмечено: ${n} из ${S2_MAX}`; }
 function quoteInText(q){
   const clean = s => norm(s).replace(/[^а-яa-z\- ]+/g," ").replace(/\s+/g," ").trim();
   const c = clean(q); if(c.split(" ").length < 1 || !c) return null;
@@ -1758,6 +1807,7 @@ function renderStory({tap=false, selected=[], hits=null, father=false}={}){
     if(father && fl){ const np = norm(p); const k = np.indexOf(fl); if(k>=0){ fStart=k; fEnd=k+fl.length; } }
     const out = p.replace(WORD_RE, (w, off) => {
       const idx = i++; const n = norm(w);
+      if(tap && isFuncWord(w)) return `<span class="fw">${esc(w)}</span>`;
       const cls = ["w"];
       if(!tap && vocabFor(n)) cls.push("voc");
       if(selected.includes(idx)) cls.push("on");
@@ -1768,6 +1818,14 @@ function renderStory({tap=false, selected=[], hits=null, father=false}={}){
     return `<p>${out}</p>`;
   }).join("");
   return `<div class="story${tap?" tap":""}" id="story">${html}</div>`;
+}
+/* шаг 3: серый пример в поле и образец фразы на другой истории */
+function slotExample(k){ const m = T.steps[3].model; return m && m.fill[k] ? "например: " + m.fill[k] : (T.steps[3].slots[k]||""); }
+function modelHtml(){
+  const m = T.steps[3].model; if(!m) return "";
+  const ph = m.frame.split(/(\{\d\})/).map(p => { const x = p.match(/^\{(\d)\}$/); return x ? `<u>${esc(m.fill[x[1]])}</u>` : esc(p); }).join("");
+  return `<div class="model" id="model3"><b>Образец</b> <span class="muted">(другая история — не копируй)</span><br>${ph}</div>
+    <p class="muted" style="font-size:15px">Подчёркнуто — то, что пишешь ты. Серые слова в полях — только примеры. Имя героя и «Это» уже есть в рамке — не пиши их ещё раз.</p>`;
 }
 function sourceBlock(){
   if(!T.sourceUrl) return `<div class="src">Источник текста: ${esc(T.edition)}<br>Слов во фрагменте: ${words(fullText(false)).length}.</div>`;
@@ -1836,7 +1894,7 @@ start(){
   </div>
   <div class="card"><h2>Шаги</h2>
     <ol start="0" style="padding-left:22px;margin:0">
-      <li>Слова перед чтением (словарь)</li><li>${T.id==="kostochka"?"Что сделал Ваня?":esc(T.steps[1].question)}</li><li>${T.id==="kostochka"?"Слова: поступок замечен":(T.steps[2].rows?"Слова: чья оценка":"Слова-опоры в тексте")}</li><li>Фраза письменно (по рамке)</li><li>Та же фраза голосом, 30–45 секунд</li><li>Проверка: слова рассказа в твоей фразе</li>
+      <li>Слова перед чтением (словарь)</li><li>${T.id==="kostochka"?"Что сделал Ваня?":esc(T.steps[1].question)}</li><li>${esc(T.steps[2].short || "Слова-опоры в тексте")}</li><li>Фраза письменно (по рамке)</li><li>Та же фраза голосом, 30–45 секунд</li><li>Проверка: слова рассказа в твоей фразе</li>
     </ol>
     <p class="muted">Ответы сохраняются на этом телефоне. После первого открытия страница работает без интернета (ссылки на словарь — нужен интернет; есть карточки 🖨).</p>
   </div>`;
@@ -1916,11 +1974,11 @@ text(){
   }
   return `<div class="card"><div class="steplabel">Шаг 2 · Слова текста</div>${faBlock(2)}
     <div class="q">${esc(cfg.question)}</div>
-    <p class="muted">Нажимай на слова в тексте (нажми ещё раз — отменить). Можно также написать их ниже.</p>
-    ${renderStory({tap:true, selected:s.sel, hits})}
+    <p class="muted">Нажми на слово в тексте — оно станет жёлтым. Нажми ещё раз — отметка снимется. Можно отметить до ${S2_MAX} слов. Короткие служебные слова (в, и, не, он…) не отмечаются.</p>
+    ${renderStory({tap:true, selected:s2Valid(s), hits})}
     <label class="lbl" for="a2">Или напиши слова через запятую</label>
     <input type="text" id="a2" value="${esc(s.typed)}" placeholder="…">
-    <div class="muted" id="selCount" style="margin-top:6px">Отмечено слов: ${s.sel.length}</div>
+    <div class="muted" id="selCount" style="margin-top:6px">${s2CountHtml(s2Valid(s).length)}</div>
     <button class="btn block" id="chk2">Проверить</button>
     <button class="btn sec block" id="clr2">Снять отметки</button>
     ${res}
@@ -1931,12 +1989,13 @@ text(){
   const parts = cfg.frame.split(/(\{\d\})/);
   const html = parts.map(p => { const m = p.match(/^\{(\d)\}$/);
     if(m){ const k=m[1]; return k==="3"
-      ? `<textarea id="f${k}" data-k="${k}" class="slot" rows="2" placeholder="${esc(cfg.slots[k])}">${esc(s[k])}</textarea>`
-      : `<input type="text" id="f${k}" data-k="${k}" class="slot" placeholder="${esc(cfg.slots[k])}" value="${esc(s[k])}">`; }
+      ? `<textarea id="f${k}" data-k="${k}" class="slot" rows="2" aria-label="${esc(cfg.slots[k])}" placeholder="${esc(slotExample(k))}">${esc(s[k])}</textarea>`
+      : `<input type="text" id="f${k}" data-k="${k}" class="slot" aria-label="${esc(cfg.slots[k])}" placeholder="${esc(slotExample(k))}" value="${esc(s[k])}">`; }
     return p.trim()?`<span class="fixed">${esc(p.trim())}</span>`:""; }).join(" ");
   return `<div class="card"><div class="steplabel">Шаг 3 · Письмо по рамке</div>${faBlock(3)}
     <div class="q">Напиши одну фразу по рамке</div>
     <div class="frame">${html}</div>
+    ${modelHtml()}
     <h3>Твоя фраза</h3>
     <div class="ph" id="preview">${esc(phraseOf(s))}</div>
     <div class="info">Опирайся на слова рассказа: без слова из текста ответ не засчитывается (проверка — на шаге 5). Не нужно защищать или осуждать ${esc(T.heroAcc||"Ваню")} — нужно опереться на слова автора.</div>
@@ -2036,7 +2095,7 @@ send(){
 about(){
   return `<div class="card"><h2>О методике (для преподавателя)</h2>
     <p>Изучающее чтение короткого классического фрагмента — способ интеграции ценностных ориентиров русской литературы в обучение РКИ персоязычных студентов (А2) в цифровой среде. Ориентир не добавляется лекцией о нравственности: он уже заключён в авторском слове — отец говорит «это нехорошо», Ваня заплакал; студент извлекает поступок, находит оценку в тексте и строит на ней одно высказывание с маркером из отрывка.</p>
-    <p>Все шесть шагов ведут к одной устной фразе: 0 — предтекст со словарём В. И. Даля (толкование сверяется, но не копируется и маркером не считается; нет сети — карточки), 1 — факт, 2 — слова, показывающие, что поступок замечен, 3 — письмо по рамке, 4 — та же рамка устно (30–45 с, после правки), 5 — какие слова рассказа использованы. Без маркера из отрывка ответ не засчитывается.</p>
+    <p>Все шесть шагов ведут к одной устной фразе: 0 — предтекст со словарём В. И. Даля (толкование сверяется, но не копируется и маркером не считается; нет сети — карточки), 1 — факт, 2 — слова чувств и оценки (до 6 слов, служебные слова не отмечаются), 3 — письмо по рамке (в полях серые примеры, образец — на другой истории), 4 — та же рамка устно (30–45 с, после правки), 5 — какие слова рассказа использованы. Без маркера из отрывка ответ не засчитывается.</p>
     <p>Порядок: сначала факт и слова текста, затем письмо преподавателю, затем голос. Ответ идёт лично преподавателю, а не в общую группу: норма та’арофа — вежливого ожидаемого ответа — не снимается, но не должна прийти раньше слова автора; в общий чат голосовая фраза попадает только после правки и подтверждения.</p>
     <p>Студента не просят встать на сторону Вани или осудить его; моральная лекция поверх отрывка целевым результатом не является. Прототип не использует ИИ: он проверяет только факты и наличие слов текста и не предлагает оценку.</p>
     <p class="muted">Скорик П. А. (магистрант МПГУ); соавтор — Сахар Резаи Никху (Университет имени Алламе Табатабаи, Тегеран); научный руководитель — Марков В. Т., д. п. н., профессор МГУ имени М. В. Ломоносова и МПГУ.</p>
@@ -2146,6 +2205,7 @@ function render(){
   renderProgress();
   const i = curIndex();
   $("#navPrev").disabled = (key==="route");
+  setTimeout(rulesMaybeAuto, 0);
   $("#progress").classList.toggle("hidden", key==="route");
   const ht = $("#hTitle");
   if(ht) ht.innerHTML = key==="route" ? `Тренажёр чтения · Л. Н. Толстой<small>5 рассказов · РКИ</small>` : `«${esc(T.title)}» · ${esc(T.author)}<small>Тренажёр чтения · РКИ · ${esc(T.level)}</small>`;
@@ -2234,8 +2294,13 @@ function bind(key){
     on("#chk1","click",()=>{ if(!s.s1.answer.trim()){ toast("Сначала напиши ответ"); return; } s.s1.checked=true; s.s1.attempts=(s.s1.attempts||0)+1; markDone(1); save(); render(); });
   }
   if(key===2){
-    on("#story","click",e=>{ const b=e.target.closest(".w"); if(!b) return; const i=+b.dataset.i; const k=s.s2.sel.indexOf(i);
-      if(k>=0) s.s2.sel.splice(k,1); else s.s2.sel.push(i); b.classList.toggle("on"); $("#selCount").textContent="Отмечено слов: "+s.s2.sel.length; save(); });
+    on("#story","click",e=>{ const b=e.target.closest(".w"); if(!b) return; const i=+b.dataset.i;
+      s.s2.sel = s2Valid(s.s2); /* старые отметки: убрать служебные слова и повторы */
+      const k=s.s2.sel.indexOf(i);
+      if(k>=0) s.s2.sel.splice(k,1);
+      else if(s.s2.sel.length>=S2_MAX){ toast(`Можно отметить не больше ${S2_MAX} слов. Сними одну отметку и выбери другое слово.`); return; }
+      else s.s2.sel.push(i);
+      b.classList.toggle("on", s.s2.sel.includes(i)); $("#selCount").textContent=s2CountHtml(s.s2.sel.length); save(); });
     on("#story","keydown",e=>{ if((e.key==="Enter"||e.key===" ") && e.target.closest(".w")){ e.preventDefault(); e.target.click(); } });
     on("#a2","input",e=>{s.s2.typed=e.target.value; save();});
     on("#chk2","click",()=>{ if(!check2().any){ toast("Отметь слова в тексте или напиши их"); return; } s.s2.checked=true; s.s2.attempts=(s.s2.attempts||0)+1; markDone(2); save(); render(); });
@@ -2500,6 +2565,7 @@ function buildResultsPayload(event){
     s1_answer: (s.s1.answer||"").trim(), s1_found: r1.filter(x=>x.ok).map(x=>x.label).join("; "), s1_score: sc.s1, s1_max: sc.s1max, s1_attempts: s.s1.attempts||0,
     s2_selected: picked.join(", "), s2_typed: (s.s2.typed||"").trim(), s2_found: r2.refs.filter(x=>x.ok).map(x=>x.word).join(", "), s2_extra: r2.extra.join(", "), s2_score: sc.s2, s2_max: sc.s2max, s2_attempts: s.s2.attempts||0,
     s0_guess: (s.s0.guess||"").trim(), s2_rows_ok: r2.rowsOk===null ? "" : r2.rowsOk, s3_source: s.s3.src||"", help_fa_used: !!s.s5.helpFa,
+    rules_opened: (s.rules||[]).length, rules_opened_steps: (s.rules||[]).map(x=>x.at).join(","),
     hints_used: Object.keys(s.hints||{}).filter(k=>s.hints[k]).map(k=>"Т"+k).join(","), fa_task_viewed: Object.keys(s.faTask||{}).filter(k=>s.faTask[k]).map(k=>"Т"+k).join(","),
     s3_slot1: (s.s3[1]||"").trim(), s3_slot2: (s.s3[2]||"").trim(), s3_slot3: (s.s3[3]||"").trim(), s3_phrase: filled ? phraseOf(s.s3) : "", s3_score: sc.s3, s3_max: sc.s3max,
     s4_phrase: (s.s4.phrase||"").trim(), s4_recorded: !!s.s4.recorded, s4_duration_sec: s.s4.dur||0, s4_corrected: !!s.s4.corrected, s4_score: sc.s4, s4_max: sc.s4max,
@@ -2522,7 +2588,8 @@ function buildResultsPayload(event){
     A(5, "markers", result.s5_markers, result.s5_counted, sc.s5, sc.s5max, s.s5.attempts),
     ...(s.s5.helpFa ? [A(5, "help_fa", "открыта помощь на фарси", "", "", "", s.s5.attempts)] : []),
     ...[0,1,2,3,4,5].filter(n=>(s.hints||{})[n]).map(n=>A(n, "hint_fa_"+n, "открыта подсказка на фарси", "", "", "")),
-    ...[0,1,2,3,4,5].filter(n=>(s.faTask||{})[n]).map(n=>A(n, "task_fa_"+n, "открыта формулировка на фарси", "", "", ""))
+    ...[0,1,2,3,4,5].filter(n=>(s.faTask||{})[n]).map(n=>A(n, "task_fa_"+n, "открыта формулировка на фарси", "", "", "")),
+    ...(s.rules||[]).map((x,i)=>({ ...A(x.step, "rules_open_"+(i+1), "открыты правила", "", "", ""), client_ts: x.ts || now }))
   ];
   return { key: RESULTS_KEY, schema_version: RESULTS_SCHEMA, type: "snapshot", event, source: "web", app_version: APP_VERSION,
     session_id: m.sid, text_id: T.id, student: (S.name||"").trim(), student_id: "", country: countryName(), university: String(S.university||"").trim(), level: S.level||"", group: (S.group||"").trim(), stage: stageOf(T.id), text_title: T.title, text_order: ROUTE_IDS.indexOf(T.id)+1,
@@ -2535,7 +2602,57 @@ function resultsInit(){
   resultsFlush();
 }
 
+/* ---------- «Как работать»: правила (показ один раз после профиля, потом — кнопка «?») ---------- */
+const RULES_STEPS = [
+  ["новые слова (карточки), потом читаешь текст", "کلمه‌های تازه (کارت‌ها)، بعد داستان را می‌خوانی"],
+  ["ответ на вопрос", "جواب دادن به سؤال"],
+  ["найди слова в тексте", "پیدا کردنِ کلمه‌ها در متن"],
+  ["напиши одну фразу по рамке", "نوشتنِ یک جمله طبق قالب"],
+  ["скажи эту фразу вслух (запись голоса)", "گفتنِ همان جمله با صدای بلند (ضبطِ صدا)"],
+  ["проверь слова из рассказа в твоей фразе", "بررسیِ کلمه‌های داستان در جمله‌ات"]
+];
+const RULES_POINTS = [
+  ["Сначала нажми «Проверить», потом «Далее».", "اول دکمهٔ «Проверить» را بزن، بعد «Далее»."],
+  ["Кнопки «فارسی — задание» и «💡 Подсказка» — помощь на фарси.", "دکمه‌های «فارسی» و «💡» برای کمک به زبانِ فارسی هستند."],
+  ["Шаг 4: телефон спросит про микрофон — нажми «Разрешить».", "مرحلهٔ ۴: گوشی برای میکروفون اجازه می‌خواهد؛ اجازه بده."],
+  ["Можно остановиться и вернуться потом: ответы сохраняются на этом телефоне.", "می‌توانی کار را نیمه‌کاره بگذاری و بعداً برگردی؛ جواب‌هایت روی همین گوشی ذخیره می‌شوند."],
+  ["Результаты получает только преподаватель.", "نتیجه‌ها فقط برای معلم فرستاده می‌شوند."]
+];
+function rulesPlace(){ const k = S.screen; if(typeof k==="number") return "Ш"+k; return ({text:"текст", start:"старт", route:"маршрут", send:"сдача"})[k] || "инфо"; }
+function rulesLog(place){
+  const s = st(); s.rules = Array.isArray(s.rules) ? s.rules : [];
+  if(s.rules.length < 50) s.rules.push({ at: place, step: typeof S.screen==="number" ? S.screen : "", ts: new Date().toISOString() });
+  save(); resultsSchedule();
+}
+function rulesHtml(){
+  const fa = t => `<span class="faL" lang="fa" dir="rtl">${esc(t)}</span>`;
+  return `<div class="card" role="document">
+    <h2 style="margin-top:0">Как работать <span class="faL" lang="fa" dir="rtl" style="display:inline">· راهنمای کار</span></h2>
+    <ol style="list-style:none;padding-left:0">
+      <li><b>1. Шаги по порядку:</b>${fa("۱. مرحله‌ها به ترتیب:")}
+        <ol start="0" style="margin-top:4px">${RULES_STEPS.map(r=>`<li>${esc(r[0])}${fa(r[1])}</li>`).join("")}</ol></li>
+      ${RULES_POINTS.map((r,i)=>`<li><b>${i+2}.</b> ${esc(r[0])}${fa((["۲","۳","۴","۵","۶"][i])+". "+r[1])}</li>`).join("")}
+    </ol>
+    <button class="btn block" id="rulesOk">Понятно · فهمیدم</button>
+    <p class="muted" style="font-size:14px;margin:8px 0 0">Открыть снова — кнопка «?» вверху. ${fa("برای دیدنِ دوباره، دکمهٔ «?» بالای صفحه را بزن.")}</p>
+  </div>`;
+}
+function openRules(auto){
+  if($("#rulesOvl")) return;
+  rulesLog(auto ? "авто" : rulesPlace());
+  const d = document.createElement("div"); d.className = "ovl"; d.id = "rulesOvl";
+  d.setAttribute("role","dialog"); d.setAttribute("aria-modal","true"); d.setAttribute("aria-label","Как работать");
+  d.innerHTML = rulesHtml(); document.body.appendChild(d);
+  const close = () => { S.rulesSeen = true; save(); d.remove(); document.removeEventListener("keydown", esc_); };
+  const esc_ = e => { if(e.key==="Escape") close(); };
+  d.querySelector("#rulesOk").addEventListener("click", close);
+  document.addEventListener("keydown", esc_);
+  const b = d.querySelector("#rulesOk"); try{ b.focus({preventScroll:true}); }catch(e){}
+}
+function rulesMaybeAuto(){ if(!S.rulesSeen && S.profileSaved && String(S.name||"").trim()) openRules(true); }
+
 /* ---------- старт ---------- */
+$("#hRules").addEventListener("click", ()=>openRules(false));
 $("#navNext").addEventListener("click", next);
 $("#navPrev").addEventListener("click", prev);
 $("#hTitle").addEventListener("click", ()=>go("route"));
